@@ -17,20 +17,16 @@
  */
 package org.apache.usergrid.persistence.collection.mvcc.changelog;
 
-
-import java.util.Collection;
+import com.google.inject.Inject;
+import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
 import java.util.List;
 
-import org.jukito.JukitoRunner;
-import org.jukito.UseModules;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,6 +42,10 @@ import org.apache.usergrid.persistence.model.entity.Entity;
 import org.apache.usergrid.persistence.model.entity.SimpleId;
 import org.apache.usergrid.persistence.model.field.IntegerField;
 import org.apache.usergrid.persistence.model.field.StringField;
+import org.jukito.JukitoRunner;
+import org.jukito.UseModules;
+import org.junit.runner.RunWith;
+import rx.Observable;
 
 import com.google.inject.Inject;
 import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
@@ -96,7 +96,7 @@ public class ChangeLogGeneratorImplTest {
     @Test
     public void testBasicOperation() throws ConnectionException {
 
-        LOG.info("ChangeLogGeneratorImpl test");
+        LOG.info( "getChangeLog1" );
 
         // create an entity and make a series of changes to it so that versions get created
         CollectionScope context = new CollectionScopeImpl(
