@@ -29,42 +29,19 @@ public class CassandraConfigModule extends AbstractModule {
     /** The location of the defaults properties file */
     private static final String CASSANDRA_DEFAULTS_PROPERTIES = "cassandra-defaults.properties";
 
-    /** Additional value overrides (not defaults overrides) to properties */
-    private final Map<String,Object> overrides;
 
 
     public CassandraConfigModule() {
-        overrides = Collections.emptyMap();
     }
 
-
-    public CassandraConfigModule( Map<String,Object> overrides ) {
-        this.overrides = new HashMap<String, Object>();
-        this.overrides.putAll( overrides );
-    }
 
 
     protected void configure() {
 
-        // This loads the overriding values into the configuration
-        if ( ConfigurationManager.getConfigInstance() instanceof ConcurrentCompositeConfiguration ) {
-            ConcurrentCompositeConfiguration config =
-                    ( ConcurrentCompositeConfiguration ) ConfigurationManager.getConfigInstance();
-            Map<String,Object> values = new HashMap<String, Object>( PropertyUtils
-                    .filter( ICassandraConfig.OPTIONS, overrides ) );
-            //noinspection unchecked
-            values.putAll( ( Map ) PropertyUtils.loadSystemProperties( ICassandraConfig.OPTIONS ) );
-            ConcurrentMapConfiguration mapConfiguration = new ConcurrentMapConfiguration( values );
-            config.addConfigurationAtFront( mapConfiguration, "CassandraConfigModuleConfig" );
-        }
-
-        // Generate the defaults for dynamic properties - config has our
-        // values if overrides and config files provided them
-        new DynamicPropertyNames().bindProperties( binder(), PropertyUtils
-                .loadFromClassPath( CASSANDRA_DEFAULTS_PROPERTIES ) );
-
         bind( ICassandraConfig.class ).to( DynamicCassandraConfig.class ).asEagerSingleton();
         bind( IDynamicCassandraConfig.class ).to( DynamicCassandraConfig.class ).asEagerSingleton();
+
+
 
     }
 }

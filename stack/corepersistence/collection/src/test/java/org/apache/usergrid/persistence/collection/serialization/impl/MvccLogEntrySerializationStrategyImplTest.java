@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 
 import org.apache.usergrid.persistence.collection.CollectionScope;
 import org.apache.usergrid.persistence.collection.cassandra.CassandraRule;
+import org.apache.usergrid.persistence.collection.guice.CollectionModule;
 import org.apache.usergrid.persistence.collection.guice.MigrationManagerRule;
 import org.apache.usergrid.persistence.collection.guice.TestCollectionModule;
 import org.apache.usergrid.persistence.collection.impl.CollectionScopeImpl;
@@ -38,7 +39,7 @@ import static org.mockito.Mockito.mock;
 
 /** @author tnine */
 @RunWith( JukitoRunner.class )
-@UseModules( TestCollectionModule.class )
+@UseModules( {TestCollectionModule.class, CollectionModule.class })
 public class MvccLogEntrySerializationStrategyImplTest {
 
 
@@ -191,7 +192,8 @@ public class MvccLogEntrySerializationStrategyImplTest {
     @Test(expected = NullPointerException.class)
     public void deleteParamEntityId() throws ConnectionException {
 
-        logEntryStrategy.delete( new CollectionScopeImpl(new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), null,
+        logEntryStrategy.delete(
+                new CollectionScopeImpl( new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), null,
                 UUIDGenerator.newTimeUUID() );
     }
 
@@ -200,7 +202,8 @@ public class MvccLogEntrySerializationStrategyImplTest {
     public void deleteParamVersion() throws ConnectionException {
 
         logEntryStrategy
-                .delete( new CollectionScopeImpl(new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), new SimpleId( "test" ), null );
+                .delete( new CollectionScopeImpl( new SimpleId( "organization" ), new SimpleId( "test" ), "test" ),
+                        new SimpleId( "test" ), null );
     }
 
 
@@ -214,7 +217,8 @@ public class MvccLogEntrySerializationStrategyImplTest {
     public void loadParamEntityId() throws ConnectionException {
 
         logEntryStrategy
-                .load( new CollectionScopeImpl(new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), null, UUIDGenerator.newTimeUUID() );
+                .load( new CollectionScopeImpl( new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), null,
+                        UUIDGenerator.newTimeUUID() );
     }
 
 
@@ -236,8 +240,8 @@ public class MvccLogEntrySerializationStrategyImplTest {
     public void loadListParamEntityId() throws ConnectionException {
 
         logEntryStrategy
-                .load( new CollectionScopeImpl(new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), null, UUIDGenerator.newTimeUUID(),
-                        1 );
+                .load( new CollectionScopeImpl( new SimpleId( "organization" ), new SimpleId( "test" ), "test" ), null,
+                        UUIDGenerator.newTimeUUID(), 1 );
     }
 
 

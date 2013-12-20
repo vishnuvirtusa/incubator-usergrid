@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import org.apache.usergrid.persistence.collection.cassandra.CassandraRule;
+import org.apache.usergrid.persistence.collection.guice.CollectionModule;
 import org.apache.usergrid.persistence.collection.guice.MigrationManagerRule;
 import org.apache.usergrid.persistence.collection.guice.TestCollectionModule;
 import org.apache.usergrid.persistence.collection.impl.CollectionScopeImpl;
@@ -33,7 +34,7 @@ import static org.junit.Assert.assertNull;
  *
  */
 @RunWith( JukitoRunner.class )
-@UseModules( { TestCollectionModule.class } )
+@UseModules( { TestCollectionModule.class, CollectionModule.class } )
 public class EntityCollectionManagerSyncIT {
     @Inject
     private EntityCollectionManagerFactory factory;

@@ -40,6 +40,7 @@ import com.netflix.astyanax.model.ColumnList;
 import com.netflix.astyanax.serializers.AbstractSerializer;
 import com.netflix.astyanax.serializers.IntegerSerializer;
 import com.netflix.astyanax.serializers.UUIDSerializer;
+import com.netflix.config.DynamicIntProperty;
 
 
 /**
@@ -63,11 +64,11 @@ public class MvccLogEntrySerializationStrategyImpl implements MvccLogEntrySerial
 
 
     protected final Keyspace keyspace;
-    protected final int timeout;
+    protected final DynamicIntProperty timeout;
 
 
     @Inject
-    public MvccLogEntrySerializationStrategyImpl( final Keyspace keyspace, @Named( TIMEOUT_PROP ) final int timeout ) {
+    public MvccLogEntrySerializationStrategyImpl( final Keyspace keyspace, @Named( TIMEOUT_PROP ) final DynamicIntProperty timeout ) {
         this.keyspace = keyspace;
         this.timeout = timeout;
     }
@@ -89,7 +90,7 @@ public class MvccLogEntrySerializationStrategyImpl implements MvccLogEntrySerial
 
                 //Write the stage with a timeout, it's set as transient
                 if ( stage.isTransient() ) {
-                    colMutation.putColumn( colName, stage, SER, timeout );
+                    colMutation.putColumn( colName, stage, SER, timeout.get() );
                     return;
                 }
 

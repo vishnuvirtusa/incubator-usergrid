@@ -22,6 +22,7 @@ import com.netflix.astyanax.connectionpool.exceptions.BadRequestException;
 import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
 import com.netflix.astyanax.ddl.ColumnFamilyDefinition;
 import com.netflix.astyanax.ddl.KeyspaceDefinition;
+import com.netflix.config.DynamicStringProperty;
 
 
 /**
@@ -51,13 +52,13 @@ public class MigrationManagerImpl implements MigrationManager {
 
     @Inject
     public MigrationManagerImpl( final Keyspace keyspace, final Set<Migration> migrations, final Properties props,
-                                 @Named( STRATEGY_CLASS ) final String strategyClass,
-                                 @Named( REPLICATION_FACTOR ) final String replicationFactor ) {
+                                 @Named( STRATEGY_CLASS ) final DynamicStringProperty strategyClass,
+                                 @Named( REPLICATION_FACTOR ) final DynamicStringProperty replicationFactor ) {
         this.keyspace = keyspace;
         this.migrations = migrations;
         this.props = props;
-        this.strategyClass = strategyClass;
-        this.replicationFactor = replicationFactor;
+        this.strategyClass = strategyClass.get();
+        this.replicationFactor = replicationFactor.get();
     }
 
 
