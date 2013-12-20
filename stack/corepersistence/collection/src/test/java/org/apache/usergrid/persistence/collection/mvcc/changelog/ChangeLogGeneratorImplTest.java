@@ -19,6 +19,8 @@ package org.apache.usergrid.persistence.collection.mvcc.changelog;
 
 import com.google.inject.Inject;
 import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
+
+import java.util.Collection;
 import java.util.List;
 
 import org.junit.After;
@@ -51,6 +53,10 @@ import com.google.inject.Inject;
 import com.netflix.astyanax.connectionpool.exceptions.ConnectionException;
 
 import rx.Observable;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 
 /**
@@ -149,16 +155,16 @@ public class ChangeLogGeneratorImplTest {
 
             for (ChangeLogEntry cle : result) {
                 LOG.info( cle.toString() );
-                Assert.assertFalse( cle.getVersions().isEmpty() );
+                assertFalse( cle.getVersions().isEmpty() );
             }
-            Assert.assertEquals( 6, result.size() );
-            Assert.assertTrue( isAscendingOrder( result ) );
+            assertEquals( 6, result.size() );
+            assertTrue( isAscendingOrder( result ) );
 
-            Assert.assertEquals( ChangeLogEntry.ChangeType.PROPERTY_WRITE, result.get( 1 ).getChangeType() );
-            Assert.assertEquals( "name3", result.get( 1 ).getField().getValue() );
+            assertEquals( ChangeLogEntry.ChangeType.PROPERTY_WRITE, result.get( 1 ).getChangeType() );
+            assertEquals( "name3", result.get( 1 ).getField().getValue() );
 
-            Assert.assertEquals( ChangeLogEntry.ChangeType.PROPERTY_DELETE, result.get( 5 ).getChangeType() );
-            Assert.assertEquals( "name1", result.get( 5 ).getField().getValue() );
+            assertEquals( ChangeLogEntry.ChangeType.PROPERTY_DELETE, result.get( 5 ).getChangeType() );
+            assertEquals( "name1", result.get( 5 ).getField().getValue() );
         }
        
         {
@@ -182,16 +188,16 @@ public class ChangeLogGeneratorImplTest {
 
             for (ChangeLogEntry cle : result) {
                 LOG.info( cle.toString() );
-                Assert.assertFalse( cle.getVersions().isEmpty() );
+                assertFalse( cle.getVersions().isEmpty() );
             }
-            Assert.assertEquals(6, result.size() );
-            Assert.assertTrue( isAscendingOrder( result ) );
+            assertEquals(6, result.size() );
+            assertTrue( isAscendingOrder( result ) );
 
-            Assert.assertEquals( ChangeLogEntry.ChangeType.PROPERTY_WRITE, result.get( 2 ).getChangeType() );
-            Assert.assertEquals( "buddy", result.get( 2 ).getField().getValue() );
+            assertEquals( ChangeLogEntry.ChangeType.PROPERTY_WRITE, result.get( 2 ).getChangeType() );
+            assertEquals( "buddy", result.get( 2 ).getField().getValue() );
 
-            Assert.assertEquals( ChangeLogEntry.ChangeType.PROPERTY_DELETE, result.get( 4 ).getChangeType() );
-            Assert.assertEquals( "count", result.get( 4 ).getField().getName() );
+            assertEquals( ChangeLogEntry.ChangeType.PROPERTY_DELETE, result.get( 4 ).getChangeType() );
+            assertEquals( "count", result.get( 4 ).getField().getName() );
         }
     }
 
