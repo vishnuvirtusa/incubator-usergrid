@@ -10,12 +10,12 @@ options {
 
 
 @header {
-package org.usergrid.persistence.query.tree;
+package org.apache.usergrid.persistence.query.tree;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.persistence.Query;
-import org.usergrid.persistence.Query.SortPredicate;
+import org.apache.usergrid.persistence.Query;
+import org.apache.usergrid.persistence.Query.SortPredicate;
 
 }
 
@@ -34,12 +34,12 @@ import org.usergrid.persistence.Query.SortPredicate;
 
 
 @lexer::header {
-package org.usergrid.persistence.query.tree;
+package org.apache.usergrid.persistence.query.tree;
 
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.usergrid.persistence.exceptions.QueryTokenException;
+import org.apache.usergrid.persistence.exceptions.QueryTokenException;
 
 }
 
