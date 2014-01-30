@@ -76,7 +76,7 @@ import static org.apache.usergrid.persistence.Schema.getDefaultSchema;
 
 public class QueryProcessor {
 
-    private static final int PAGE_SIZE = 1000;
+    public static final int PAGE_SIZE = 1000;
     private static final Logger logger = LoggerFactory.getLogger( QueryProcessor.class );
 
     private static final Schema SCHEMA = getDefaultSchema();

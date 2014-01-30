@@ -24,6 +24,7 @@ import org.junit.Test;
 
 /** @author tnine */
 public class AllInConnectionNoTypeIT extends AbstractIteratingQueryIT {
+
     @Test
     public void allInConnectionNoType() throws Exception {
         allIn( new ConnectionNoTypeHelper(app) );
