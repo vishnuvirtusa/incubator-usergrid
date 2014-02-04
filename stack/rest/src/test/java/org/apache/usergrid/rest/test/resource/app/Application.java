@@ -23,7 +23,7 @@ import org.apache.usergrid.rest.test.resource.RootResource;
 import org.apache.usergrid.rest.test.resource.ValueResource;
 import org.apache.usergrid.rest.test.resource.app.queue.DevicesCollection;
 import org.apache.usergrid.rest.test.resource.app.queue.QueuesCollection;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /** @author tnine */

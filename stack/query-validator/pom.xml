@@ -79,7 +79,7 @@
                         <configuration>
                             <classifier>tests</classifier>
                             <includes>
-                                <include>**/org.apache.usergrid/**</include>
+                                <include>**/org/apache/usergrid/**</include>
                             </includes>
                         </configuration>
                     </execution>

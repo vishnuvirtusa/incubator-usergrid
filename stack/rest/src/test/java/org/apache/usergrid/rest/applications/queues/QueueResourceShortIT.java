@@ -15,7 +15,7 @@ import org.apache.usergrid.mq.QueuePosition;
 import org.apache.usergrid.rest.TestContextSetup;
 import org.apache.usergrid.rest.test.resource.app.queue.Queue;
 import org.apache.usergrid.utils.MapUtils;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;

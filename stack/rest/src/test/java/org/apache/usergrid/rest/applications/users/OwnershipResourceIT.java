@@ -25,7 +25,7 @@ import org.apache.usergrid.rest.test.resource.app.queue.DevicesCollection;
 import org.apache.usergrid.rest.test.security.TestAppUser;
 import org.apache.usergrid.rest.test.security.TestUser;
 import org.apache.usergrid.utils.MapUtils;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Rule;
 import org.junit.Test;
 

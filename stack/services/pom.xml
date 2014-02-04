@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.apache.usergrid</groupId>
     <artifactId>usergrid</artifactId>
-    <version>0.0.28-SNAPSHOT</version>
+    <version>0.0.29-SNAPSHOT</version>
   </parent>
 
   <!-- Override these properties in your settings.xml in an active profile -->
@@ -420,15 +420,9 @@
     </dependency>
 
      <dependency>
-         <groupId>org.slf4j</groupId>
-         <artifactId>slf4j-api</artifactId>
-     </dependency>
-
-     <dependency>
          <groupId>org.apache.tika</groupId>
          <artifactId>tika-core</artifactId>
      </dependency>
-
 
       <!-- Testing and Logging Dependencies -->
     <dependency>

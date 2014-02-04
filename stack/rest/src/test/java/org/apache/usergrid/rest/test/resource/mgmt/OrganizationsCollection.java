@@ -22,7 +22,7 @@ import org.apache.usergrid.rest.test.resource.CollectionResource;
 import org.apache.usergrid.rest.test.resource.NamedResource;
 import org.apache.usergrid.rest.test.security.TestUser;
 import org.apache.usergrid.utils.MapUtils;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /** @author tnine */

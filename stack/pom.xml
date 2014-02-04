@@ -11,7 +11,7 @@
 
   <groupId>org.apache.usergrid</groupId>
   <artifactId>usergrid</artifactId>
-  <version>0.0.28-SNAPSHOT</version>
+  <version>0.0.29-SNAPSHOT</version>
   <name>Usergrid Parent</name>
   <description>Usergrid Project</description>
   <packaging>pom</packaging>
@@ -1067,13 +1067,6 @@
       </dependency>
 
       <dependency>
-        <groupId>org.apache.tomcat</groupId>
-        <artifactId>tomcat-jsp-api</artifactId>
-        <scope>test</scope>
-        <version>${tomcat-version}</version>
-      </dependency>
-
-      <dependency>
         <groupId>org.jvnet.mock-javamail</groupId>
         <artifactId>mock-javamail</artifactId>
         <version>1.9</version>
@@ -1258,7 +1251,7 @@
       <dependency>
         <groupId>org.apache.usergrid</groupId>
         <artifactId>usergrid-java-client</artifactId>
-        <version>0.0.3</version>
+        <version>0.0.9-SNAPSHOT</version>
       </dependency>
 
       <dependency>
@@ -1813,4 +1806,5 @@
       <url>https://usergrid-maven.s3.amazonaws.com/dependencies</url>
     </repository>
   </repositories>
+
 </project>

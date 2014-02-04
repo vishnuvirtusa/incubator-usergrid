@@ -21,19 +21,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
+import org.apache.usergrid.persistence.Entity;
 import org.apache.usergrid.persistence.Query;
 import org.apache.usergrid.persistence.Results;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<<<<<<< HEAD:stack/core/src/test/java/org/apache/usergrid/persistence/query/IntersectionUnionPagingIT.java
-=======
-import org.usergrid.persistence.Entity;
-import org.usergrid.persistence.Query;
-import org.usergrid.persistence.Results;
-import org.usergrid.persistence.cassandra.QueryProcessor;
->>>>>>> 33e00189bfe2b51b0795803fb8b258fe3841217d:stack/core/src/test/java/org/usergrid/persistence/query/IntersectionUnionPagingIT.java
+import org.apache.usergrid.persistence.cassandra.QueryProcessor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

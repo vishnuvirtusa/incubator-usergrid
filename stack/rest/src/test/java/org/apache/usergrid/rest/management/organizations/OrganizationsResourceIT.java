@@ -15,7 +15,7 @@ import org.apache.usergrid.persistence.cassandra.CassandraService;
 import org.apache.usergrid.persistence.entities.User;
 import org.apache.usergrid.rest.AbstractRestIT;
 import org.apache.usergrid.rest.management.organizations.OrganizationsResource;
-import org.codehaus.jackson.JsonNode;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse.Status;
