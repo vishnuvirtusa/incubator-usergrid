@@ -7,7 +7,7 @@ export CASSANDRA_LOGS=/var/log/cassandra
 export UG_TOOL_HOME=`dirname $0`
 export UG_EXPORT_TOOL_JAR=$UG_TOOL_HOME/target/usergrid-tools-0.0.1-SNAPSHOT.jar
 
-echo "usergird-tool home: $UG_TOOL_HOME"
+echo "usergrid-tool home: $UG_TOOL_HOME"
 
 # Use JAVA_HOME if set, otherwise look for java in PATH
 if [ -x $JAVA_HOME/bin/java ]; then

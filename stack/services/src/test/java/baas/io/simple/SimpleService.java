@@ -1,4 +1,4 @@
-package org.apache.usergrid.baas.io.simple;
+package baas.io.simple;
 
 
 import org.apache.usergrid.services.AbstractCollectionService;

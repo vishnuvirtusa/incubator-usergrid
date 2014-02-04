@@ -17,11 +17,9 @@ package org.apache.usergrid.services;
 
 
 import java.util.UUID;
+import baas.io.simple.SimpleService;
 
-import org.apache.usergrid.baas.io.simple.SimpleService;
 import org.apache.usergrid.cassandra.Concurrent;
-import org.apache.usergrid.services.Service;
-import org.apache.usergrid.services.ServiceManager;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
