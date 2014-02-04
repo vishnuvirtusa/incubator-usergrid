@@ -47,9 +47,9 @@ public class PagingEntitiesTest extends AbstractRestIT {
 
             props.put( "ordinal", i );
             JsonNode activity = activities.create( props );
-            verifyCreated[i] = activity.findValue( "created" ).getLongValue();
+            verifyCreated[i] = activity.findValue( "created" ).asLong();
             if ( i == 0 ) {
-                created = activity.findValue( "created" ).getLongValue();
+                created = activity.findValue( "created" ).asLong();
             }
         }
         ArrayUtils.reverse( verifyCreated );
@@ -96,9 +96,9 @@ public class PagingEntitiesTest extends AbstractRestIT {
             }
             props.put( "ordinal", i );
             JsonNode activity = activities.create( props );
-            verifyCreated[i] = activity.findValue( "created" ).getLongValue();
+            verifyCreated[i] = activity.findValue( "created" ).asLong();
             if ( i == 18 ) {
-                created = activity.findValue( "created" ).getLongValue();
+                created = activity.findValue( "created" ).asLong();
             }
         }
 
@@ -108,7 +108,7 @@ public class PagingEntitiesTest extends AbstractRestIT {
 
         for ( int index = 0; index < 5; index++ ) {
             assertEquals( verifyCreated[maxSize - 1 - index],
-                    node.get( "entities" ).get( index ).get( "created" ).getLongValue() );
+                    node.get( "entities" ).get( index ).get( "created" ).asLong() );
         }
 
         int totalEntitiesContained = activities.countEntities( query );

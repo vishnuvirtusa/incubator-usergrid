@@ -181,7 +181,7 @@ public class UserResourceIT extends AbstractRestIT {
 
         JsonNode actor = getActor( entity );
 
-        UUID actorId = UUIDUtils.tryGetUUID( actor.get( "uuid" ).getTextValue() );
+        UUID actorId = UUIDUtils.tryGetUUID( actor.get( "uuid" ).asText() );
 
         assertEquals( userId, actorId );
 
@@ -220,7 +220,7 @@ public class UserResourceIT extends AbstractRestIT {
 
         JsonNode actor = getActor( entity );
 
-        UUID actorId = UUIDUtils.tryGetUUID( actor.get( "uuid" ).getTextValue() );
+        UUID actorId = UUIDUtils.tryGetUUID( actor.get( "uuid" ).asText() );
 
         assertEquals( userId, actorId );
 
@@ -264,7 +264,7 @@ public class UserResourceIT extends AbstractRestIT {
 
         JsonNode actor = getActor( entity );
 
-        UUID actorId = UUIDUtils.tryGetUUID( actor.get( "uuid" ).getTextValue() );
+        UUID actorId = UUIDUtils.tryGetUUID( actor.get( "uuid" ).asText() );
 
         assertEquals( testUUID, actorId );
 
@@ -897,12 +897,12 @@ public class UserResourceIT extends AbstractRestIT {
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
                         .get( JsonNode.class );
 
-        String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).getTextValue();
+        String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).asText();
 
         node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/" + uuid ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
         logNode( node );
-        assertEquals( "ed@anuff.com", node.get( "entities" ).get( 0 ).get( "email" ).getTextValue() );
+        assertEquals( "ed@anuff.com", node.get( "entities" ).get( 0 ).get( "email" ).asText() );
     }
 
 
@@ -1217,7 +1217,7 @@ public class UserResourceIT extends AbstractRestIT {
         catch ( UniformInterfaceException uie ) {
             status = uie.getResponse().getClientResponseStatus();
             JsonNode body = uie.getResponse().getEntity( JsonNode.class );
-            assertEquals( "user not activated", body.findPath( "error_description" ).getTextValue() );
+            assertEquals( "user not activated", body.findPath( "error_description" ).asText() );
         }
     }
 

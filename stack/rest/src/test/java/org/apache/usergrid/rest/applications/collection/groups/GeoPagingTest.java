@@ -64,7 +64,7 @@ public class GeoPagingTest extends AbstractRestIT {
             props.put( "path", newPath );
             props.put( "ordinal", i );
             JsonNode activity = groups.create( props );
-            index[i] = activity.findValue( "created" ).getLongValue();
+            index[i] = activity.findValue( "created" ).asLong();
         }
 
         String query =
@@ -73,7 +73,7 @@ public class GeoPagingTest extends AbstractRestIT {
         JsonNode node = groups.withQuery( query ).get();
         assertEquals( 1, node.get( "entities" ).size() );
 
-        assertEquals( index[3], node.get( "entities" ).get( 0 ).get( "created" ).getLongValue() );
+        assertEquals( index[3], node.get( "entities" ).get( 0 ).get( "created" ).asLong() );
     }
 
 

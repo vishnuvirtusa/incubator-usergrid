@@ -53,7 +53,7 @@ public class AndOrQueryTest extends AbstractRestIT {
             props.put( "ordinal", i );
             JsonNode activity = activities.create( props );
             if ( i == 0 ) {
-                created = activity.findValue( "created" ).getLongValue();
+                created = activity.findValue( "created" ).asLong();
             }
         }
 
@@ -93,8 +93,8 @@ public class AndOrQueryTest extends AbstractRestIT {
         assertEquals( 10, incorrectNode.get( "entities" ).size() );
 
         for ( int i = 0; i < 10; i++ ) {
-            assertEquals( 19 - i, incorrectNode.get( "entities" ).get( i ).get( "ordinal" ).getIntValue() );
-            assertEquals( "stop", incorrectNode.get( "entities" ).get( i ).get( "verb" ).getTextValue() );
+            assertEquals( 19 - i, incorrectNode.get( "entities" ).get( i ).get( "ordinal" ).asInt() );
+            assertEquals( "stop", incorrectNode.get( "entities" ).get( i ).get( "verb" ).asText() );
         }
     }
 

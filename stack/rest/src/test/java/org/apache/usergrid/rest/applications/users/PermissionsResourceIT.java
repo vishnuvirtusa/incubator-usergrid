@@ -28,7 +28,7 @@ import org.apache.usergrid.management.OrganizationOwnerInfo;
 import org.apache.usergrid.rest.AbstractRestIT;
 import org.apache.usergrid.utils.UUIDUtils;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.apache.usergrid.java.client.entities.Group;
@@ -466,8 +466,8 @@ public class PermissionsResourceIT extends AbstractRestIT {
                 .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, book );
 
         logNode( node );
-        assertEquals( "Ready Player One", getEntity( node, 0 ).get( "title" ).getTextValue() );
-        String bookId = getEntity( node, 0 ).get( "uuid" ).getTextValue();
+        assertEquals( "Ready Player One", getEntity( node, 0 ).get( "title" ).asText() );
+        String bookId = getEntity( node, 0 ).get( "uuid" ).asText();
 
         String userOneToken = setup.getMgmtSvc().getAccessTokenForAppUser( appInfo.getId(), userOneId, 0 );
         // post a review of the book as user1
@@ -477,7 +477,7 @@ public class PermissionsResourceIT extends AbstractRestIT {
         node = resource().path( String.format( "/%s/%s/reviews", params.get( "orgName" ), params.get( "appName" ) ) )
                 .queryParam( "access_token", userOneToken ).accept( MediaType.APPLICATION_JSON )
                 .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, review );
-        String reviewId = getEntity( node, 0 ).get( "uuid" ).getTextValue();
+        String reviewId = getEntity( node, 0 ).get( "uuid" ).asText();
 
         // POST https://api.usergrid.com/my-org/my-app/users/me/wrote/review/${reviewId}
         node = resource().path( String
@@ -657,7 +657,7 @@ public class PermissionsResourceIT extends AbstractRestIT {
 
         ArrayNode data = ( ArrayNode ) node.get( "data" );
 
-        Iterator<JsonNode> iterator = data.getElements();
+        Iterator<JsonNode> iterator = data.elements();
 
         while ( iterator.hasNext() ) {
             if ( grant.equals( iterator.next().asText() ) ) {
@@ -686,7 +686,7 @@ public class PermissionsResourceIT extends AbstractRestIT {
 
         ArrayNode data = ( ArrayNode ) node.get( "data" );
 
-        Iterator<JsonNode> iterator = data.getElements();
+        Iterator<JsonNode> iterator = data.elements();
 
         while ( iterator.hasNext() ) {
             if ( grant.equals( iterator.next().asText() ) ) {

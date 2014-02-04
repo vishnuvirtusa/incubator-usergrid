@@ -28,7 +28,7 @@ import org.apache.usergrid.rest.TestContextSetup;
 import org.apache.usergrid.rest.test.resource.CustomCollection;
 import org.apache.usergrid.rest.test.resource.EntityResource;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Rule;
 import org.junit.Test;
 import org.apache.usergrid.java.client.entities.Entity;
@@ -213,6 +213,6 @@ public class PagingResourceIT extends AbstractRestIT {
 
 
     private static final ApiResponse parse( JsonNode response ) throws Exception {
-        return mapper.readValue( response, ApiResponse.class );
+        return mapper.treeToValue( response, ApiResponse.class ); 
     }
 }

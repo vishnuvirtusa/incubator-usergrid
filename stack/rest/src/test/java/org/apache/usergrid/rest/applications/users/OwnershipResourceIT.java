@@ -56,7 +56,7 @@ public class OwnershipResourceIT extends AbstractRestIT {
         String token = user1.getToken();
         JsonNode userNode = context.application().users().user( "me" ).get();
         assertNotNull( userNode );
-        String uuid = userNode.get( "entities" ).get( 0 ).get( "uuid" ).getTextValue();
+        String uuid = userNode.get( "entities" ).get( 0 ).get( "uuid" ).asText();
         assertNotNull( uuid );
         setup.getMgmtSvc().revokeAccessTokenForAppUser( token );
 

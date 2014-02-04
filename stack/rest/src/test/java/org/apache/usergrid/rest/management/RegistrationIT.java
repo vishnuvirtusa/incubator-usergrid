@@ -78,7 +78,7 @@ public class RegistrationIT extends AbstractRestIT {
                             "testpassword" );
 
             UUID owner_uuid =
-                    UUID.fromString( node.findPath( "data" ).findPath( "owner" ).findPath( "uuid" ).getTextValue() );
+                    UUID.fromString( node.findPath( "data" ).findPath( "owner" ).findPath( "uuid" ).asText() );
 
             List<Message> inbox = org.jvnet.mock_javamail.Mailbox.get( "org.apache.usergrid.test-user-1@mockserver.com" );
 
@@ -102,7 +102,7 @@ public class RegistrationIT extends AbstractRestIT {
             catch ( UniformInterfaceException uie ) {
                 ClientResponse.Status status = uie.getResponse().getClientResponseStatus();
                 JsonNode body = uie.getResponse().getEntity( JsonNode.class );
-                assertEquals( "user disabled", body.findPath( "error_description" ).getTextValue() );
+                assertEquals( "user disabled", body.findPath( "error_description" ).asText() );
             }
 
             setup.getMgmtSvc().deactivateUser( CassandraService.MANAGEMENT_APPLICATION_ID, owner_uuid );
@@ -116,7 +116,7 @@ public class RegistrationIT extends AbstractRestIT {
             catch ( UniformInterfaceException uie ) {
                 ClientResponse.Status status = uie.getResponse().getClientResponseStatus();
                 JsonNode body = uie.getResponse().getEntity( JsonNode.class );
-                assertEquals( "user not activated", body.findPath( "error_description" ).getTextValue() );
+                assertEquals( "user not activated", body.findPath( "error_description" ).asText() );
             }
 
             // assertEquals(ActivationState.ACTIVATED,
@@ -246,7 +246,7 @@ public class RegistrationIT extends AbstractRestIT {
             ///in usergrid) and "User Invited To Organization" email
             String adminToken = adminToken();
             JsonNode node = postAddAdminToOrg( "org.apache.usergrid.test-organization", "org.apache.usergrid.test-admin-nopwd@mockserver.com", "", adminToken );
-            String uuid = node.get( "data" ).get( "user" ).get( "uuid" ).getTextValue();
+            String uuid = node.get( "data" ).get( "user" ).get( "uuid" ).asText();
             UUID userId = UUID.fromString( uuid );
 
             String subject = "Password Reset";
@@ -305,7 +305,7 @@ public class RegistrationIT extends AbstractRestIT {
             String adminToken = adminToken();
             JsonNode node = postAddAdminToOrg( "org.apache.usergrid.test-organization", "AdminUserFromOtherOrg@otherorg.com", "password1",
                     adminToken );
-            String uuid = node.get( "data" ).get( "user" ).get( "uuid" ).getTextValue();
+            String uuid = node.get( "data" ).get( "user" ).get( "uuid" ).asText();
             UUID userId = UUID.fromString( uuid );
 
             assertEquals( adminUser.getUuid(), userId );

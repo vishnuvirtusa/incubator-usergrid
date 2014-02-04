@@ -74,7 +74,7 @@ public class ConnectionResourceTest extends AbstractRestIT {
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
                         .get( JsonNode.class );
 
-        String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).getTextValue();
+        String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).asText();
 
 
         try {

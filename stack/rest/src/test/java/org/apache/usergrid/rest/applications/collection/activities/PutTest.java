@@ -50,7 +50,7 @@ public class PutTest extends AbstractRestIT {
         String query = "select * ";
 
         JsonNode node = activities.withQuery( query ).get();
-        String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).getTextValue();
+        String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).asText();
         StringBuilder buf = new StringBuilder( uuid );
 
 

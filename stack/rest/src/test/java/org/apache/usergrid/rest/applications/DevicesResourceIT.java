@@ -34,7 +34,7 @@ public class DevicesResourceIT extends AbstractRestIT {
         // create
         JsonNode entity = getEntity( response, 0 );
         assertNotNull( entity );
-        String newUuid = entity.get( "uuid" ).getTextValue();
+        String newUuid = entity.get( "uuid" ).asText();
         assertEquals( uuid.toString(), newUuid );
 
         // delete

@@ -242,7 +242,7 @@ public class ManagementResourceIT extends AbstractRestIT {
 
         assertEquals( "org.apache.usergrid.test-organization", appdata.get( "organization" ).asText() );
         assertEquals( "mgmt-org-app", appdata.get( "applicationName" ).asText() );
-        assertEquals( "http://sometestvalue/org.apache.usergrid.test-organization/mgmt-org-app", appdata.get( "uri" ).getTextValue() );
+        assertEquals( "http://sometestvalue/org.apache.usergrid.test-organization/mgmt-org-app", appdata.get( "uri" ).asText() );
         appdata = getEntity( appdata, 0 );
 
         assertEquals( "org.apache.usergrid.test-organization/mgmt-org-app", appdata.get( "name" ).asText() );
@@ -262,7 +262,7 @@ public class ManagementResourceIT extends AbstractRestIT {
 
         long startTime = System.currentTimeMillis();
 
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
 
         assertNotNull( token );
 
@@ -294,7 +294,7 @@ public class ManagementResourceIT extends AbstractRestIT {
                 .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
 
         logNode( node );
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
         assertNotNull( token );
 
         // set an organization property
@@ -324,7 +324,7 @@ public class ManagementResourceIT extends AbstractRestIT {
                 .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
 
         logNode( node );
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
         assertNotNull( token );
 
         node = resource().path( "/management/me" ).queryParam( "access_token", token )
@@ -359,7 +359,7 @@ public class ManagementResourceIT extends AbstractRestIT {
                 .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
 
         logNode( node );
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
 
         assertNotNull( token );
 
@@ -383,7 +383,7 @@ public class ManagementResourceIT extends AbstractRestIT {
                 .post( JsonNode.class );
 
         logNode( node );
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
 
         assertNotNull( token );
 

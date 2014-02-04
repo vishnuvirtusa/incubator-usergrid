@@ -190,7 +190,7 @@ public abstract class AbstractRestIT extends JerseyTest {
                 .queryParam( "username", name ).queryParam( "password", password ).accept( MediaType.APPLICATION_JSON )
                 .get( JsonNode.class );
 
-        String userToken = node.get( "access_token" ).getTextValue();
+        String userToken = node.get( "access_token" ).asText();
         LOG.info( "returning user token: {}", userToken );
         return userToken;
     }
@@ -259,7 +259,7 @@ public abstract class AbstractRestIT extends JerseyTest {
                 .queryParam( "username", user ).queryParam( "password", password ).accept( MediaType.APPLICATION_JSON )
                 .get( JsonNode.class );
 
-        String mgmToken = node.get( "access_token" ).getTextValue();
+        String mgmToken = node.get( "access_token" ).asText();
         LOG.info( "got mgmt token: {}", mgmToken );
         return mgmToken;
     }

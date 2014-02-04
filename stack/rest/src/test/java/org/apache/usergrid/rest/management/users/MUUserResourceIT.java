@@ -150,9 +150,9 @@ public class MUUserResourceIT extends AbstractRestIT {
             }
             catch ( UniformInterfaceException e ) {
                 node = e.getResponse().getEntity( JsonNode.class );
-                assertEquals( "invalid_grant", node.get( "error" ).getTextValue() );
+                assertEquals( "invalid_grant", node.get( "error" ).asText() );
                 assertEquals( "User must be confirmed to authenticate",
-                        node.get( "error_description" ).getTextValue() );
+                        node.get( "error_description" ).asText() );
                 LOG.info( "Unconfirmed user was not authorized to authenticate!" );
             }
 
@@ -562,7 +562,7 @@ public class MUUserResourceIT extends AbstractRestIT {
                 .queryParam( "username", email ).queryParam( "password", "sesame" ).accept( MediaType.APPLICATION_JSON )
                 .get( JsonNode.class );
 
-        Long changeTime = node.get( "passwordChanged" ).getLongValue();
+        Long changeTime = node.get( "passwordChanged" ).asLong();
         assertTrue( System.currentTimeMillis() - changeTime < 2000 );
 
         Map<String, String> payload = hashMap( "oldpassword", "sesame" ).map( "newpassword", "org.apache.usergrid.test" );
@@ -574,7 +574,7 @@ public class MUUserResourceIT extends AbstractRestIT {
                 .queryParam( "username", email ).queryParam( "password", "org.apache.usergrid.test" ).accept( MediaType.APPLICATION_JSON )
                 .get( JsonNode.class );
 
-        Long changeTime2 = node.get( "passwordChanged" ).getLongValue();
+        Long changeTime2 = node.get( "passwordChanged" ).asLong();
         assertTrue( changeTime < changeTime2 );
         assertTrue( System.currentTimeMillis() - changeTime2 < 2000 );
 
@@ -582,7 +582,7 @@ public class MUUserResourceIT extends AbstractRestIT {
                 .queryParam( "username", email ).queryParam( "password", "org.apache.usergrid.test" ).accept( MediaType.APPLICATION_JSON )
                 .get( JsonNode.class );
 
-        Long changeTime3 = node.get( "passwordChanged" ).getLongValue();
+        Long changeTime3 = node.get( "passwordChanged" ).asLong();
         assertEquals( changeTime2, changeTime3 );
     }
 

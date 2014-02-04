@@ -141,7 +141,7 @@ public class BasicIT extends AbstractRestIT {
 
         assertEquals( "Test User",
                 node.get( "data" ).get( "organizations" ).get( "org.apache.usergrid.test-organization" ).get( "users" ).get( "org.apache.usergrid.test" )
-                    .get( "name" ).getTextValue() );
+                    .get( "name" ).asText() );
 
 
         // org.apache.usergrid.test login user with incorrect password
@@ -180,7 +180,7 @@ public class BasicIT extends AbstractRestIT {
 
         logNode( node );
 
-        String user_access_token = node.get( "access_token" ).getTextValue();
+        String user_access_token = node.get( "access_token" ).asText();
         assertTrue( isNotBlank( user_access_token ) );
 
         // org.apache.usergrid.test get app user collection with insufficient permissions
@@ -244,7 +244,7 @@ public class BasicIT extends AbstractRestIT {
 
         logNode( node );
 
-        user_access_token = node.get( "access_token" ).getTextValue();
+        user_access_token = node.get( "access_token" ).asText();
         assertTrue( isNotBlank( user_access_token ) );
 
         // org.apache.usergrid.test set app user pin
@@ -261,7 +261,7 @@ public class BasicIT extends AbstractRestIT {
 
         logNode( node );
 
-        user_access_token = node.get( "access_token" ).getTextValue();
+        user_access_token = node.get( "access_token" ).asText();
         assertTrue( isNotBlank( user_access_token ) );
 
         // org.apache.usergrid.test user org.apache.usergrid.test extension resource
@@ -280,7 +280,7 @@ public class BasicIT extends AbstractRestIT {
 
         logNode( node );
 
-        assertEquals( "ed.anuff", node.get( "entities" ).get( 0 ).get( "username" ).getTextValue() );
+        assertEquals( "ed.anuff", node.get( "entities" ).get( 0 ).get( "username" ).asText() );
 
         // org.apache.usergrid.test create device with guest permissions (no token)
 

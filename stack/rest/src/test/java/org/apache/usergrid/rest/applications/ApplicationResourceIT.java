@@ -165,7 +165,7 @@ public class ApplicationResourceIT extends AbstractRestIT {
                 .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
 
         // ensure the URI uses the properties file as a base
-        assertEquals( node.get( "uri" ).getTextValue(), "http://sometestvalue/org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        assertEquals( node.get( "uri" ).asText(), "http://sometestvalue/org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
 
         node = getEntity( node, 0 );
         assertEquals( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app", node.get( "name" ).asText() );
@@ -184,7 +184,7 @@ public class ApplicationResourceIT extends AbstractRestIT {
                 resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/credentials" ).queryParam( "access_token", mgmtToken )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
                         .get( JsonNode.class );
-        assertEquals( "ok", node.get( "status" ).getTextValue() );
+        assertEquals( "ok", node.get( "status" ).asText() );
         logNode( node );
     }
 
@@ -197,7 +197,7 @@ public class ApplicationResourceIT extends AbstractRestIT {
                 resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/credentials" ).queryParam( "access_token", mgmtToken )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
                         .post( JsonNode.class );
-        assertEquals( "ok", node.get( "status" ).getTextValue() );
+        assertEquals( "ok", node.get( "status" ).asText() );
         logNode( node );
     }
 
@@ -254,11 +254,11 @@ public class ApplicationResourceIT extends AbstractRestIT {
 
         long startTime = System.currentTimeMillis();
 
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
 
         assertNotNull( token );
 
-        long expires_in = node.get( "expires_in" ).getLongValue();
+        long expires_in = node.get( "expires_in" ).asLong();
         assertEquals( ttl, expires_in * 1000 );
 
         JsonNode userdata =
@@ -310,11 +310,11 @@ public class ApplicationResourceIT extends AbstractRestIT {
                 .queryParam( "username", "ed@anuff.com" ).queryParam( "password", "sesame" )
                 .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
 
-        String token = node.get( "access_token" ).getTextValue();
+        String token = node.get( "access_token" ).asText();
         logNode( node );
         assertNotNull( token );
 
-        long expires_in = node.get( "expires_in" ).getLongValue();
+        long expires_in = node.get( "expires_in" ).asLong();
         assertEquals( 604800, expires_in );
 
         Map<String, String> payload = hashMap( "accesstokenttl", "31536000000" );
@@ -327,7 +327,7 @@ public class ApplicationResourceIT extends AbstractRestIT {
                 .queryParam( "username", "ed@anuff.com" ).queryParam( "password", "sesame" )
                 .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
 
-        assertEquals( 31536000, node.get( "expires_in" ).getLongValue() );
+        assertEquals( 31536000, node.get( "expires_in" ).asLong() );
         logNode( node );
     }
 
@@ -410,8 +410,8 @@ public class ApplicationResourceIT extends AbstractRestIT {
                         .type( MediaType.APPLICATION_FORM_URLENCODED_TYPE ).accept( MediaType.APPLICATION_JSON )
                         .post( JsonNode.class, payload );
 
-        assertNotNull( "It has access_token.", node.get( "access_token" ).getTextValue() );
-        assertNotNull( "It has expires_in.", node.get( "expires_in" ).getIntValue() );
+        assertNotNull( "It has access_token.", node.get( "access_token" ).asText() );
+        assertNotNull( "It has expires_in.", node.get( "expires_in" ).asInt() );
     }
 
 
@@ -430,8 +430,8 @@ public class ApplicationResourceIT extends AbstractRestIT {
                 .type( MediaType.APPLICATION_FORM_URLENCODED_TYPE ).accept( MediaType.APPLICATION_JSON )
                 .post( JsonNode.class, payload );
 
-        assertNotNull( "It has access_token.", node.get( "access_token" ).getTextValue() );
-        assertNotNull( "It has expires_in.", node.get( "expires_in" ).getIntValue() );
+        assertNotNull( "It has access_token.", node.get( "access_token" ).asText() );
+        assertNotNull( "It has expires_in.", node.get( "expires_in" ).asInt() );
     }
 
 
@@ -451,8 +451,8 @@ public class ApplicationResourceIT extends AbstractRestIT {
                         .type( MediaType.APPLICATION_JSON_TYPE ).accept( MediaType.APPLICATION_JSON )
                         .post( JsonNode.class, payload );
 
-        assertNotNull( "It has access_token.", node.get( "access_token" ).getTextValue() );
-        assertNotNull( "It has expires_in.", node.get( "expires_in" ).getIntValue() );
+        assertNotNull( "It has access_token.", node.get( "access_token" ).asText() );
+        assertNotNull( "It has expires_in.", node.get( "expires_in" ).asInt() );
     }
 
 

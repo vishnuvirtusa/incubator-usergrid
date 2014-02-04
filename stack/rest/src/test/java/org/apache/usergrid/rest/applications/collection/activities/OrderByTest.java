@@ -45,7 +45,7 @@ public class OrderByTest extends AbstractRestIT {
             props.put( "ordinal", i );
             JsonNode activity = activities.create( props );
             if ( i == 5 ) {
-                created = activity.findValue( "created" ).getLongValue();
+                created = activity.findValue( "created" ).asLong();
             }
         }
 

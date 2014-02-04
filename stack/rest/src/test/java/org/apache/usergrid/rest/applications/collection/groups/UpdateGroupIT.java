@@ -56,7 +56,7 @@ public class UpdateGroupIT extends AbstractRestIT {
             groupMap.put( "path", groupPath );
             String path = context.getOrgName() + "/" + context.getAppName() + "/groups";
             JsonNode groupJson = webResourceBuilder( path ).post( JsonNode.class, groupMap );
-            groupId = groupJson.get( "entities" ).get( 0 ).get( "uuid" ).getTextValue();
+            groupId = groupJson.get( "entities" ).get( 0 ).get( "uuid" ).asText();
         }
         catch ( UniformInterfaceException e ) {
             fail( "Error creating group: " + IOUtils.toString( e.getResponse().getEntityInputStream() ) );
@@ -101,6 +101,6 @@ public class UpdateGroupIT extends AbstractRestIT {
     private void assertTitle( String groupId, String title ) {
         String path = context.getOrgName() + "/" + context.getAppName() + "/groups/" + groupId;
         JsonNode groupJson = webResourceBuilder( path ).get( JsonNode.class );
-        Assert.assertEquals( title, groupJson.get( "entities" ).get( 0 ).get( "title" ).getTextValue() );
+        Assert.assertEquals( title, groupJson.get( "entities" ).get( 0 ).get( "title" ).asText() );
     }
 }

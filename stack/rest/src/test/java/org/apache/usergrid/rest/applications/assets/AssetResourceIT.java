@@ -47,8 +47,8 @@ public class AssetResourceIT extends AbstractRestIT {
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
                         .post( JsonNode.class, payload );
         JsonNode idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        UUID id = UUID.fromString( idNode.getTextValue() );
-        assertNotNull( idNode.getTextValue() );
+        UUID id = UUID.fromString( idNode.asText() );
+        assertNotNull( idNode.asText() );
         logNode( node );
 
         byte[] data = IOUtils.toByteArray( this.getClass().getResourceAsStream( "/cassandra_eye.jpg" ) );
@@ -66,7 +66,7 @@ public class AssetResourceIT extends AbstractRestIT {
                 .get( JsonNode.class );
 
         idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        assertEquals( id.toString(), idNode.getTextValue() );
+        assertEquals( id.toString(), idNode.asText() );
     }
 
 
@@ -81,7 +81,7 @@ public class AssetResourceIT extends AbstractRestIT {
                 .post( JsonNode.class, payload );
 
         JsonNode idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        String uuid = idNode.getTextValue();
+        String uuid = idNode.asText();
         assertNotNull( uuid );
         logNode( node );
 
@@ -93,10 +93,10 @@ public class AssetResourceIT extends AbstractRestIT {
         node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/foos/" + uuid ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
         logNode( node );
-        Assert.assertEquals( "image/jpeg", node.findValue( AssetUtils.CONTENT_TYPE ).getTextValue() );
-        Assert.assertEquals( 7979, node.findValue( "content-length" ).getIntValue() );
+        Assert.assertEquals( "image/jpeg", node.findValue( AssetUtils.CONTENT_TYPE ).asText() );
+        Assert.assertEquals( 7979, node.findValue( "content-length" ).asInt() );
         idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        assertEquals( uuid, idNode.getTextValue() );
+        assertEquals( uuid, idNode.asText() );
 
         // get data by UUID
         InputStream is =
@@ -127,7 +127,7 @@ public class AssetResourceIT extends AbstractRestIT {
                 .post( JsonNode.class, form );
 
         JsonNode idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        String uuid = idNode.getTextValue();
+        String uuid = idNode.asText();
         assertNotNull( uuid );
         logNode( node );
 
@@ -135,10 +135,10 @@ public class AssetResourceIT extends AbstractRestIT {
         node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/foos/" + uuid ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
         logNode( node );
-        assertEquals( "application/octet-stream", node.findValue( AssetUtils.CONTENT_TYPE ).getTextValue() );
-        assertEquals( 5324800, node.findValue( AssetUtils.CONTENT_LENGTH ).getIntValue() );
+        assertEquals( "application/octet-stream", node.findValue( AssetUtils.CONTENT_TYPE ).asText() );
+        assertEquals( 5324800, node.findValue( AssetUtils.CONTENT_LENGTH ).asInt() );
         idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        assertEquals( uuid, idNode.getTextValue() );
+        assertEquals( uuid, idNode.asText() );
 
         // get data
         InputStream is =
@@ -165,7 +165,7 @@ public class AssetResourceIT extends AbstractRestIT {
                 .post( JsonNode.class, payload );
 
         JsonNode idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        String uuid = idNode.getTextValue();
+        String uuid = idNode.asText();
         assertNotNull( uuid );
         logNode( node );
 
@@ -183,13 +183,13 @@ public class AssetResourceIT extends AbstractRestIT {
         node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/foos/" + uuid ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
         logNode( node );
-        assertEquals( "image/jpeg", node.findValue( AssetUtils.CONTENT_TYPE ).getTextValue() );
-        assertEquals( 7979, node.findValue( AssetUtils.CONTENT_LENGTH ).getIntValue() );
+        assertEquals( "image/jpeg", node.findValue( AssetUtils.CONTENT_TYPE ).asText() );
+        assertEquals( 7979, node.findValue( AssetUtils.CONTENT_LENGTH ).asInt() );
         idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        assertEquals( uuid, idNode.getTextValue() );
+        assertEquals( uuid, idNode.asText() );
         JsonNode nameNode = node.get( "entities" ).get( 0 ).get( "foo" );
-        assertEquals( "bar2", nameNode.getTextValue() );
-        long lastModified = node.findValue( AssetUtils.LAST_MODIFIED ).getLongValue();
+        assertEquals( "bar2", nameNode.asText() );
+        long lastModified = node.findValue( AssetUtils.LAST_MODIFIED ).asLong();
         Assert.assertEquals( created, lastModified, 500 );
 
         // get data
@@ -204,7 +204,7 @@ public class AssetResourceIT extends AbstractRestIT {
         node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/foos/" + uuid ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.MULTIPART_FORM_DATA ).put( JsonNode.class, form );
         logNode( node );
-        Assert.assertTrue( lastModified != node.findValue( AssetUtils.LAST_MODIFIED ).getLongValue() );
+        Assert.assertTrue( lastModified != node.findValue( AssetUtils.LAST_MODIFIED ).asLong() );
     }
 
 
@@ -222,7 +222,7 @@ public class AssetResourceIT extends AbstractRestIT {
                 .post( JsonNode.class, form );
         logNode( node );
         JsonNode idNode = node.get( "entities" ).get( 0 ).get( "uuid" );
-        String uuid = idNode.getTextValue();
+        String uuid = idNode.asText();
 
         // get entity
         long timeout = System.currentTimeMillis() + 60000;
