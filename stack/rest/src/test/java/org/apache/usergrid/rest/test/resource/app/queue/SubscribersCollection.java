@@ -37,7 +37,7 @@ public class SubscribersCollection extends CollectionResource {
 
     public JsonNode subscribe( String queueName ) {
         this.queueName = queueName;
-        return jsonMedia( withToken( resource() ) ).put( JsonNode.class );
+        return mapper.valueToTree(jsonMedia( withToken( resource() ) ).put( HashMap.class ));
     }
 
 

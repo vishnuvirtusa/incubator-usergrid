@@ -6,8 +6,7 @@ import java.util.Map;
 
 public class MapUtils {
 
-	public static <T> Map<String, T> newMapWithoutKeys(Map<String, T> map,
-			List<String> keys) {
+	public static <T> Map<String, T> newMapWithoutKeys(Map<String, T> map, List<String> keys) {
 		Map<String, T> newMap = null;
 		if (map != null) {
 			newMap = new HashMap<String, T>(map);

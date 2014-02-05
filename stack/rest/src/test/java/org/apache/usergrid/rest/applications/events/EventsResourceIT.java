@@ -37,9 +37,9 @@ public class EventsResourceIT extends AbstractRestIT {
         } );
 
         JsonNode node =
-                resource().path( "/test-organization/test-app/events" ).queryParam( "access_token", access_token )
+                mapper.valueToTree(resource().path( "/test-organization/test-app/events" ).queryParam( "access_token", access_token )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .post( JsonNode.class, payload );
+                        .post( HashMap.class, payload ));
 
         assertNotNull( node.get( "entities" ) );
         String advertising = node.get( "entities" ).get( 0 ).get( "uuid" ).asText();

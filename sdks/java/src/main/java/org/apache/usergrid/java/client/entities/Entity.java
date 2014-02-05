@@ -13,11 +13,18 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Entity {
 
+    private ObjectMapper mapper = new ObjectMapper();
+
+    private static TypeReference HASHMAP_TYPE_REF = new TypeReference<HashMap<String, Object>>() {};
+
     public final static String PROPERTY_UUID = "uuid";
     public final static String PROPERTY_TYPE = "type";
+
 
     protected Map<String, JsonNode> properties = new HashMap<String, JsonNode>();
 
@@ -62,7 +69,15 @@ public class Entity {
         setUUIDProperty(properties, PROPERTY_UUID, uuid);
     }
 
+    /**
+     * Get properties in form suitable for use in Jersey POST or PUT payload.
+     */
     @JsonAnyGetter
+    public Map<String, Object> getPropertiesAsSimpleMap() {
+        Map map = newMapWithoutKeys(properties, getPropertyNames());
+        return mapper.convertValue(map, HASHMAP_TYPE_REF);  
+    } 
+    
     public Map<String, JsonNode> getProperties() {
         return newMapWithoutKeys(properties, getPropertyNames());
     }

@@ -767,13 +767,19 @@ public class UserResourceIT extends AbstractRestIT {
         Entity userEntity = response.getEntities().get( 0 );
 
         // attempt to log in
-        JsonNode node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" ).queryParam( "username", username )
-                .queryParam( "password", "password" ).queryParam( "grant_type", "password" )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
+        HashMap map = resource().path( "/test-organization/test-app/token" )
+                .queryParam( "username", username )
+                .queryParam( "password", "password" )
+                .queryParam( "grant_type", "password" )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .get( HashMap.class );
 
+        JsonNode node = mapper.valueToTree( map );
+        String userToken = node.get( "access_token" ).asText();
         assertEquals( username, node.get( "user" ).get( "username" ).asText() );
-        assertEquals( name, node.get( "user" ).get( "name" ).asText() );
-        assertEquals( email, node.get( "user" ).get( "email" ).asText() );
+        assertEquals( name,     node.get( "user" ).get( "name" ).asText() );
+        assertEquals( email,    node.get( "user" ).get( "email" ).asText() );
 
         // now update the name and email
         String newName = "newName";
@@ -785,17 +791,24 @@ public class UserResourceIT extends AbstractRestIT {
         userEntity.setProperty( "pin", "newp1n" );
 
         node = mapper.valueToTree(resource().path( String.format( "/test-organization/test-app/users/%s", username ) )
-                .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).put( HashMap.class, userEntity.getProperties() ));
+                .queryParam( "access_token", userToken )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .put( HashMap.class, userEntity.getPropertiesAsSimpleMap() ));
 
         // now see if we've updated
-        node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" ).queryParam( "username", username )
-                .queryParam( "password", "password" ).queryParam( "grant_type", "password" )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" )
+                .queryParam( "username", username )
+                .queryParam( "password", "password" )
+                .queryParam( "grant_type", "password" )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .get( HashMap.class ));
 
         assertEquals( username, node.get( "user" ).get( "username" ).asText() );
-        assertEquals( newName, node.get( "user" ).get( "name" ).asText() );
+        assertEquals( newName,  node.get( "user" ).get( "name" ).asText() );
         assertEquals( newEmail, node.get( "user" ).get( "email" ).asText() );
+
         assertNull( newEmail, node.get( "user" ).get( "password" ) );
         assertNull( newEmail, node.get( "user" ).get( "pin" ) );
     }

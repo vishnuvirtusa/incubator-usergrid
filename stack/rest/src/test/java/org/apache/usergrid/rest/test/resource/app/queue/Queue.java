@@ -132,7 +132,7 @@ public class Queue extends CollectionResource {
 
     /** post to the entity set */
     public JsonNode delete() {
-        return jsonMedia( withToken( resource() ) ).delete( JsonNode.class );
+        return mapper.valueToTree(jsonMedia( withToken( resource() ) ).delete( HashMap.class ));
     }
 
 

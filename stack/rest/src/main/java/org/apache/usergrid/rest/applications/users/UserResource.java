@@ -100,9 +100,16 @@ public class UserResource extends ServiceResource {
     @PUT
     @RequireApplicationAccess
     @Consumes(MediaType.APPLICATION_JSON)
-    public JSONWithPadding executePut( @Context UriInfo ui, Map<String, Object> json,
-                                       @QueryParam("callback") @DefaultValue("callback") String callback )
-            throws Exception {
+    public JSONWithPadding executePut( 
+            @Context UriInfo ui, 
+            Map<String, Object> json,
+            @QueryParam("callback") @DefaultValue("callback") String callback ) throws Exception {
+
+        for ( String key : json.keySet()) {
+            logger.debug( "{} = [{}] {}", new String[] { 
+                key, json.get( key ).getClass().getCanonicalName(), json.get(key).toString()} );
+        }
+
         if ( json != null ) {
             json.remove( "password" );
             json.remove( "pin" );
