@@ -38,13 +38,13 @@ public class ServiceFactoryIT extends AbstractServiceIT {
     @Ignore
     @Test
     public void testServiceFactory() throws Exception {
-        logger.info( "org.apache.usergrid.test service factory" );
+        logger.info( "test service factory" );
     }
 
 
     @Test
     public void testPackagePrefixes() throws Exception {
-        logger.info( "org.apache.usergrid.test package prefixes" );
+        logger.info( "test package prefixes" );
 
         UUID applicationId = setup.getEmf().createApplication( "org", "app" );
         ServiceManager sm = setup.getSmf().getServiceManager( applicationId );

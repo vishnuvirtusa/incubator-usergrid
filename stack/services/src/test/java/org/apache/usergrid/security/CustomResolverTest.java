@@ -64,8 +64,8 @@ public class CustomResolverTest {
             LifecycleUtils.destroy( securityManager );
         }
         catch ( UnavailableSecurityManagerException e ) {
-            // we don't care about this when cleaning up the org.apache.usergrid.test environment
-            // (for example, maybe the subclass is a unit org.apache.usergrid.test and it didn't
+            // we don't care about this when cleaning up the test environment
+            // (for example, maybe the subclass is a unit test and it didn't
             // need a SecurityManager instance because it was using only
             // mock Subject instances)
         }
@@ -148,7 +148,7 @@ public class CustomResolverTest {
 
         testImplies( true, "/users/mefake@usergrid.org/**", "/users/mefake@usergrid.org/permissions" );
 
-        //org.apache.usergrid.test substitution
+        //test substitution
         testImplies( true, "/users/me/**", String.format( "/users/%s/permissions", fakeUser.getUsername() ) );
 
         testImplies( true, "/users/me/**", String.format( "/users/%s/permissions", fakeUser.getUuid() ) );

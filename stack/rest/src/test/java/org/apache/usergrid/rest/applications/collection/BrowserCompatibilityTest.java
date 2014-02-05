@@ -33,7 +33,7 @@ import static org.junit.Assert.assertEquals;
 
 
 /**
- * Simple tests to org.apache.usergrid.test querying at the REST tier
+ * Simple tests to test querying at the REST tier
  */
 @Concurrent()
 public class BrowserCompatibilityTest extends AbstractRestIT {

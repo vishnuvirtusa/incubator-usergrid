@@ -36,12 +36,12 @@ import static org.junit.Assert.assertNull;
 
 @Concurrent()
 public class CollectionServiceIT extends AbstractServiceIT {
-    public static final String CST_TEST_GROUP = "cst-org.apache.usergrid.test-group";
+    public static final String CST_TEST_GROUP = "cst-test-group";
 
 
     @Test
     public void testUsersCollectionWithGroupIdName() throws Exception {
-        app.put( "path", "cst-org.apache.usergrid.test-group/cst-org.apache.usergrid.test-group" );
+        app.put( "path", "cst-test-group/cst-test-group" );
         app.put( "title", "Collection Test group" );
 
         Entity group = app.testRequest( ServiceAction.POST, 1, "groups" ).getEntity();

@@ -33,7 +33,7 @@ public class OrganizationResourceIT extends AbstractRestIT {
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put( "securityLevel", 5 );
 
-        Map payload = hashMap( "email", "org.apache.usergrid.test-user-1@organizationresourceit.testorganizationupdate.com" )
+        Map payload = hashMap( "email", "test-user-1@organizationresourceit.testorganizationupdate.com" )
                 .map( "username", "organizationresourceit.testorganizationupdate.test-user-1" )
                 .map( "name", "organizationresourceit.testorganizationupdate" ).map( "password", "password" )
                 .map( "organization", "organizationresourceit.testorganizationupdate.test-org-1" )
@@ -42,8 +42,8 @@ public class OrganizationResourceIT extends AbstractRestIT {
 
         payload.put( OrganizationsResource.ORGANIZATION_PROPERTIES, properties );
 
-        JsonNode node = resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+        JsonNode node = mapper.valueToTree(resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
         assertNotNull( node );
 
         OrganizationInfo orgInfo =
@@ -54,14 +54,14 @@ public class OrganizationResourceIT extends AbstractRestIT {
         properties.put( "securityLevel", 6 );
         payload.put( OrganizationsResource.ORGANIZATION_PROPERTIES, properties );
 
-        node = resource().path( "/management/organizations/organizationresourceit.testorganizationupdate.test-org-1" )
+        node = mapper.valueToTree(resource().path( "/management/organizations/organizationresourceit.testorganizationupdate.test-org-1" )
                 .queryParam( "access_token", superAdminToken() ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).put( JsonNode.class, payload );
+                .type( MediaType.APPLICATION_JSON_TYPE ).put( HashMap.class, payload ));
         logNode( node );
 
-        node = resource().path( "/management/organizations/organizationresourceit.testorganizationupdate.test-org-1" )
+        node = mapper.valueToTree(resource().path( "/management/organizations/organizationresourceit.testorganizationupdate.test-org-1" )
                 .queryParam( "access_token", superAdminToken() ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         logNode( node );
         Assert.assertEquals( 6,
                 node.get( "organization" ).get( OrganizationsResource.ORGANIZATION_PROPERTIES ).get( "securityLevel" )

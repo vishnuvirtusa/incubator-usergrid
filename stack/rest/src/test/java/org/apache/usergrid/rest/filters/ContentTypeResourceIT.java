@@ -54,7 +54,7 @@ import static org.junit.Assert.assertEquals;
 /** @author tnine */
 
 // @Ignore("Client login is causing tests to fail due to socket closure by grizzly.  Need to re-enable once we're not
-// using grizzly to org.apache.usergrid.test")
+// using grizzly to test")
 @Concurrent()
 public class ContentTypeResourceIT extends AbstractRestIT {
 

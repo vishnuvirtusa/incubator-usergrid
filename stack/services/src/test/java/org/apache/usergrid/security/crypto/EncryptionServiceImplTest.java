@@ -160,7 +160,7 @@ public class EncryptionServiceImplTest {
         creds.setEncrypted( true );
         creds.setCipher( "sha-1" );
 
-        //set the secret into the creds statically for the legacy org.apache.usergrid.test
+        //set the secret into the creds statically for the legacy test
         creds.setSecret( "8rpwQiXFx-5nbzIB6iVr9XeeaHc" );
 
 

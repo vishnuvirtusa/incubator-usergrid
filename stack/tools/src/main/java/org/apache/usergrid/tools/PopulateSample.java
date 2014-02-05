@@ -61,7 +61,7 @@ public class PopulateSample extends ToolBase {
 
     @Override
     public void runTool( CommandLine line ) throws Exception {
-        logger.info( "Starting org.apache.usergrid.test..." );
+        logger.info( "Starting test..." );
         startSpring();
 
         UserInfo user = managementService.createAdminUser( "admin", "admin", "admin@ug.com", "none", false, false );

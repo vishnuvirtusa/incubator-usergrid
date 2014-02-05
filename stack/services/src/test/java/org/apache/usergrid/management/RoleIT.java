@@ -58,11 +58,11 @@ public class RoleIT {
 
         OrganizationOwnerInfo ooi = setup.getMgmtSvc()
                                          .createOwnerAndOrganization( "RoleIT", "edanuff5", "Ed Anuff", "ed@anuff.com5",
-                                                 "org.apache.usergrid.test", true, false );
+                                                 "test", true, false );
 
         OrganizationInfo organization = ooi.getOrganization();
 
-        UUID applicationId = setup.getMgmtSvc().createApplication( organization.getUuid(), "org.apache.usergrid.test-app" ).getId();
+        UUID applicationId = setup.getMgmtSvc().createApplication( organization.getUuid(), "test-app" ).getId();
         EntityManager em = setup.getEmf().getEntityManager( applicationId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();

@@ -55,7 +55,7 @@ public class TokenServiceIT {
     public static void setup() throws Exception {
         log.info( "in setup" );
         adminUser =
-                setup.getMgmtSvc().createAdminUser( "edanuff34", "Ed Anuff", "ed@anuff34.com", "org.apache.usergrid.test", false, false );
+                setup.getMgmtSvc().createAdminUser( "edanuff34", "Ed Anuff", "ed@anuff34.com", "test", false, false );
         OrganizationInfo organization = setup.getMgmtSvc().createOrganization( "TokenServiceTestOrg", adminUser, true );
 
         // TODO update to organizationName/applicationName

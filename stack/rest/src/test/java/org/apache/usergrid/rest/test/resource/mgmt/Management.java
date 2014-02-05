@@ -26,10 +26,15 @@ import org.apache.usergrid.rest.test.resource.RootResource;
 import org.apache.usergrid.rest.test.resource.app.UsersCollection;
 import org.apache.usergrid.utils.MapUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import java.util.HashMap;
 
 
 /** @author tnine */
 public class Management extends NamedResource {
+
+    static ObjectMapper mapper = new ObjectMapper();
 
     /**
      * @param parent
@@ -66,10 +71,15 @@ public class Management extends NamedResource {
     /** Get the token from management for this username and password */
     public String tokenGet( String username, String password ) {
 
-        JsonNode node = resource().path( String.format( "%s/token", url() ) ).queryParam( "grant_type", "password" )
-                .queryParam( "username", username ).queryParam( "password", password )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+        HashMap map = resource().path( String.format( "%s/token", url() ) )
+                .queryParam( "grant_type", "password" )
+                .queryParam( "username", username )
+                .queryParam( "password", password )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .get( HashMap.class );
 
+        JsonNode node = mapper.valueToTree( map );
         return node.get( "access_token" ).asText();
     }
 
@@ -77,12 +87,16 @@ public class Management extends NamedResource {
     /** Get the token from management for this username and password */
     public String tokenPost( String username, String password ) {
 
-        Map<String, String> payload =
-                MapUtils.hashMap( "grant_type", "password" ).map( "username", username ).map( "password", password );
-
-        JsonNode node = resource().path( String.format( "%s/token", url() ) ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
-
+        Map<String, String> payload = MapUtils.hashMap( "grant_type", "password" )
+                .map( "username", username )
+                .map( "password", password );
+        
+        HashMap map = resource().path( String.format( "%s/token", url() ) )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .post( HashMap.class, payload );
+        
+        JsonNode node = mapper.valueToTree( map );
         return node.get( "access_token" ).asText();
     }
 

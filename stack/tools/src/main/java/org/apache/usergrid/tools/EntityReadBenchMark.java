@@ -265,7 +265,7 @@ public class EntityReadBenchMark extends ToolBase {
 
             List<Object> cassKeys = new ArrayList<Object>( buckets.size() );
 
-            Object keyPrefix = key( appId, "tests", "org.apache.usergrid.test" );
+            Object keyPrefix = key( appId, "tests", "test" );
 
             for ( String bucket : buckets ) {
                 cassKeys.add( key( keyPrefix, bucket ) );
@@ -321,7 +321,7 @@ public class EntityReadBenchMark extends ToolBase {
 
             TimerContext timer = dictReads.time();
 
-            Assert.isTrue( indexer.existsInIndex( appId, "tests", "org.apache.usergrid.test", value ) );
+            Assert.isTrue( indexer.existsInIndex( appId, "tests", "test", value ) );
 
             timer.stop();
         }

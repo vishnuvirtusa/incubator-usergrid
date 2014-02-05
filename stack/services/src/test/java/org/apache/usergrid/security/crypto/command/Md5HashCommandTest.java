@@ -32,7 +32,7 @@ public class Md5HashCommandTest {
     @Test
     public void hashAndAuthCorrect() throws UnsupportedEncodingException {
 
-        String test = "I'm a  org.apache.usergrid.test password";
+        String test = "I'm a  test password";
 
         byte[] hashed = DigestUtils.md5Hex( test.getBytes( "UTF-8" ) ).getBytes( "UTF-8" );
 

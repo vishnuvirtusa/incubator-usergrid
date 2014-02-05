@@ -29,7 +29,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void stringEqual() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -54,8 +54,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         Set<String> colls = db.getCollectionNames();
 
@@ -89,7 +89,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void greaterThan() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -114,8 +114,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicDBObject query = new BasicDBObject();
         query.put( "founded", new BasicDBObject( "$gt", 1973 ) );
@@ -140,7 +140,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void greaterThanEqual() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -165,8 +165,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicDBObject query = new BasicDBObject();
         query.put( "founded", new BasicDBObject( "$gte", 1973 ) );
@@ -195,7 +195,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void lessThan() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -220,8 +220,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicDBObject query = new BasicDBObject();
         query.put( "founded", new BasicDBObject( "$lt", 2000 ) );
@@ -246,7 +246,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void lessThanEqual() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -271,8 +271,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicDBObject query = new BasicDBObject();
         query.put( "founded", new BasicDBObject( "$lte", 2000 ) );
@@ -301,7 +301,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void in() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -326,8 +326,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicBSONList list = new BasicBSONList();
         list.add( "Stone Temple Pilots" );
@@ -356,7 +356,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void or() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -381,8 +381,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicBSONList list = new BasicBSONList();
         list.add( new BasicDBObject( "founded", new BasicDBObject( "$gte", 2000 ) ) );
@@ -411,7 +411,7 @@ public class MongoQueryTest extends AbstractMongoTest {
     @Test
     public void and() throws Exception {
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -436,8 +436,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicBSONList list = new BasicBSONList();
         list.add( new BasicDBObject( "founded", new BasicDBObject( "$gte", 2000 ) ) );
@@ -460,7 +460,7 @@ public class MongoQueryTest extends AbstractMongoTest {
 
     @Test
     public void withFieldSelector() throws Exception {
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
@@ -484,8 +484,8 @@ public class MongoQueryTest extends AbstractMongoTest {
 
         Mongo m = new Mongo( "localhost", 27017 );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
 
         BasicDBObject queryName = new BasicDBObject();
         queryName.put( "name", "Journey" );

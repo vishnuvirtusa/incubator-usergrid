@@ -28,15 +28,15 @@ import static org.junit.Assert.assertNotNull;
 public class GroupServiceIT extends AbstractServiceIT {
     @Test
     public void testGroups() throws Exception {
-        app.put( "path", "org.apache.usergrid.test/org.apache.usergrid.test" );
+        app.put( "path", "test/test" );
         app.put( "title", "Test group" );
 
         Entity group = app.testRequest( ServiceAction.POST, 1, "groups" ).getEntity();
         assertNotNull( group );
 
-        app.testRequest( ServiceAction.GET, 1, "groups", "org.apache.usergrid.test", "org.apache.usergrid.test" );
+        app.testRequest( ServiceAction.GET, 1, "groups", "test", "test" );
 
-        app.testRequest( ServiceAction.GET, 0, "groups", "org.apache.usergrid.test", "org.apache.usergrid.test", "messages" );
+        app.testRequest( ServiceAction.GET, 0, "groups", "test", "test", "messages" );
 
         app.testRequest( ServiceAction.GET, 1, "groups" );
 
@@ -46,11 +46,11 @@ public class GroupServiceIT extends AbstractServiceIT {
         Entity user = app.testRequest( ServiceAction.POST, 1, "users" ).getEntity();
         assertNotNull( user );
 
-        app.testRequest( ServiceAction.GET, 0, "groups", "org.apache.usergrid.test", "org.apache.usergrid.test", "users" );
+        app.testRequest( ServiceAction.GET, 0, "groups", "test", "test", "users" );
 
-        app.testRequest( ServiceAction.POST, 1, "groups", "org.apache.usergrid.test", "org.apache.usergrid.test", "users", user.getUuid() );
+        app.testRequest( ServiceAction.POST, 1, "groups", "test", "test", "users", user.getUuid() );
 
-        app.testRequest( ServiceAction.GET, 1, "groups", "org.apache.usergrid.test", "org.apache.usergrid.test", "users" );
+        app.testRequest( ServiceAction.GET, 1, "groups", "test", "test", "users" );
 
         app.testRequest( ServiceAction.GET, 1, "users", user.getUuid(), "groups" );
 

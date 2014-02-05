@@ -32,7 +32,7 @@ public class QueueResourceLong3IT extends AbstractQueueResourceIT {
     @Test
     public void transactionPageConsistent() throws InterruptedException {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 1000;
 
@@ -62,7 +62,7 @@ public class QueueResourceLong3IT extends AbstractQueueResourceIT {
     @Test
     public void transaction10KMax() throws InterruptedException {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
         queue.post( MapUtils.hashMap( "id", 0 ) );
 
         queue = queue.withTimeout( 10000 ).withLimit( 10001 );
@@ -81,7 +81,7 @@ public class QueueResourceLong3IT extends AbstractQueueResourceIT {
 
     @Test
     public void transactionRenewal() throws InterruptedException {
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 2;
 

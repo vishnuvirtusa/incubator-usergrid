@@ -24,6 +24,7 @@ import org.apache.usergrid.cassandra.Concurrent;
 import org.apache.usergrid.rest.AbstractRestIT;
 import org.apache.usergrid.utils.UUIDUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -155,35 +156,35 @@ public class GroupResourceIT extends AbstractRestIT {
 
         // add Permission
 
-        String json = "{\"permission\":\"delete:/org.apache.usergrid.test\"}";
-        JsonNode node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/permissions" )
+        String json = "{\"permission\":\"delete:/test\"}";
+        JsonNode node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/permissions" )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, json );
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, json ));
 
         // check it
         assertNull( node.get( "errors" ) );
-        assertEquals( node.get( "data" ).get( 0 ).asText(), "delete:/org.apache.usergrid.test" );
+        assertEquals( node.get( "data" ).get( 0 ).asText(), "delete:/test" );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/permissions" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/permissions" )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
-        assertEquals( node.get( "data" ).get( 0 ).asText(), "delete:/org.apache.usergrid.test" );
+        assertEquals( node.get( "data" ).get( 0 ).asText(), "delete:/test" );
 
 
         // remove Permission
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/permissions" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/permissions" )
                 .queryParam( "access_token", access_token ).queryParam( "permission", "delete%3A%2Ftest" )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).delete( JsonNode.class );
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).delete( HashMap.class ));
 
         // check it
         assertNull( node.get( "errors" ) );
         assertTrue( node.get( "data" ).size() == 0 );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/permissions" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/permissions" )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
         assertTrue( node.get( "data" ).size() == 0 );
     }
@@ -206,9 +207,9 @@ public class GroupResourceIT extends AbstractRestIT {
 
         String json = "{\"title\":\"" + roleName + "\",\"name\":\"" + roleName + "\"}";
         JsonNode node =
-                resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/roles" ).queryParam( "access_token", access_token )
+                mapper.valueToTree(resource().path( "/test-organization/test-app/roles" ).queryParam( "access_token", access_token )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .post( JsonNode.class, json );
+                        .post( HashMap.class, json ));
 
         // check it
         assertNull( node.get( "errors" ) );
@@ -216,54 +217,54 @@ public class GroupResourceIT extends AbstractRestIT {
 
         // add Role
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/roles/" + roleName )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/roles/" + roleName )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class ));
 
         // check it
         assertNull( node.get( "errors" ) );
         assertEquals( node.get( "entities" ).get( 0 ).get( "name" ).asText(), roleName );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/roles" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/roles" )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
         assertEquals( node.get( "entities" ).get( 0 ).get( "name" ).asText(), roleName );
 
         // check root roles
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/roles" ).queryParam( "access_token", access_token )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/roles" ).queryParam( "access_token", access_token )
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
         assertTrue( node.get( "entities" ).findValuesAsText( "name" ).contains( roleName ) );
 
         // remove Role
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/roles/" + roleName )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/roles/" + roleName )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).delete( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).delete( HashMap.class ));
         assertNull( node.get( "errors" ) );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/groups/" + createdId + "/roles" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/groups/" + createdId + "/roles" )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
         assertTrue( node.get( "entities" ).size() == 0 );
 
         // check root roles - role should remain
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/roles" ).queryParam( "access_token", access_token )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/roles" ).queryParam( "access_token", access_token )
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
         assertTrue( node.get( "entities" ).findValuesAsText( "name" ).contains( roleName ) );
 
         // now kill the root role
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/roles/" + roleName )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/roles/" + roleName )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).delete( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).delete( HashMap.class ));
         assertNull( node.get( "errors" ) );
 
         // now it should be gone
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/roles" ).queryParam( "access_token", access_token )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/roles" ).queryParam( "access_token", access_token )
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
         assertNull( node.get( "errors" ) );
         assertFalse( node.get( "entities" ).findValuesAsText( "name" ).contains( roleName ) );
     }

@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 
 
 /**
- * Simple class to create org.apache.usergrid.test for for exporting
+ * Simple class to create test for for exporting
  *
  * @author tnine
  */

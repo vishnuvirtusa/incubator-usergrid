@@ -22,8 +22,10 @@ import java.util.Map;
 import org.apache.usergrid.rest.test.resource.CollectionResource;
 import org.apache.usergrid.rest.test.resource.NamedResource;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sun.jersey.api.client.WebResource;
+import java.util.HashMap;
 
 
 /**
@@ -32,6 +34,8 @@ import com.sun.jersey.api.client.WebResource;
  * @author tnine
  */
 public class Queue extends CollectionResource {
+
+    protected static ObjectMapper mapper = new ObjectMapper();
 
     private String clientId;
     private int limit = 0;
@@ -115,14 +119,14 @@ public class Queue extends CollectionResource {
      * @return
      */
     public JsonNode post( Map<String, ?>[] payload ) {
-        JsonNode node = super.postInternal( payload );
+        JsonNode node = mapper.valueToTree(super.postInternal( payload ));
         return node;
     }
 
 
     /** Get entities in this collection. Cursor is optional */
     public JsonNode get() {
-        return jsonMedia( withQueueParams( withToken( resource() ) ) ).get( JsonNode.class );
+        return mapper.valueToTree(jsonMedia( withQueueParams( withToken( resource() ) ) ).get( HashMap.class ));
     }
 
 

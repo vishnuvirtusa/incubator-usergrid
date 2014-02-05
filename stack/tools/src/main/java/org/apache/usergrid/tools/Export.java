@@ -76,7 +76,7 @@ public class Export extends ExportingToolBase {
         for ( Entry<UUID, String> organization : organizations.entrySet() ) {
 
             if ( organization.equals( properties.getProperty( "usergrid.test-account.organization" ) ) ) {
-                // Skip org.apache.usergrid.test data from being exported.
+                // Skip test data from being exported.
                 continue;
             }
 
@@ -358,7 +358,7 @@ public class Export extends ExportingToolBase {
 
         for ( Entry<UUID, String> organizationName : getOrgs().entrySet() ) {
 
-            // Let's skip the org.apache.usergrid.test entities.
+            // Let's skip the test entities.
             if ( organizationName.equals( properties.getProperty( "usergrid.test-account.organization" ) ) ) {
                 continue;
             }

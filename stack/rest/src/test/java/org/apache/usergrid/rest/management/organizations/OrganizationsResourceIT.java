@@ -14,7 +14,6 @@ import org.apache.usergrid.persistence.EntityManager;
 import org.apache.usergrid.persistence.cassandra.CassandraService;
 import org.apache.usergrid.persistence.entities.User;
 import org.apache.usergrid.rest.AbstractRestIT;
-import org.apache.usergrid.rest.management.organizations.OrganizationsResource;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.Test;
 
@@ -55,17 +54,17 @@ public class OrganizationsResourceIT extends AbstractRestIT {
             Map<String, Object> organizationProperties = new HashMap<String, Object>();
             organizationProperties.put( "securityLevel", 5 );
 
-            Map payload = hashMap( "email", "org.apache.usergrid.test-user-1@mockserver.com" ).map( "username", "org.apache.usergrid.test-user-1" )
-                    .map( "name", "Test User" ).map( "password", "password" ).map( "organization", "org.apache.usergrid.test-org-1" )
+            Map payload = hashMap( "email", "test-user-1@mockserver.com" ).map( "username", "test-user-1" )
+                    .map( "name", "Test User" ).map( "password", "password" ).map( "organization", "test-org-1" )
                     .map( "company", "Apigee" );
             payload.put( OrganizationsResource.ORGANIZATION_PROPERTIES, organizationProperties );
 
-            JsonNode node = resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+            JsonNode node = mapper.valueToTree(resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
+                    .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
             assertNotNull( node );
 
-            ApplicationInfo applicationInfo = setup.getMgmtSvc().getApplicationInfo( "org.apache.usergrid.test-org-1/sandbox" );
+            ApplicationInfo applicationInfo = setup.getMgmtSvc().getApplicationInfo( "test-org-1/sandbox" );
 
             assertNotNull( applicationInfo );
 
@@ -75,25 +74,25 @@ public class OrganizationsResourceIT extends AbstractRestIT {
             assertTrue( rolePerms.contains( "get,post,put,delete:/**" ) );
             logNode( node );
 
-            UserInfo ui = setup.getMgmtSvc().getAdminUserByEmail( "org.apache.usergrid.test-user-1@mockserver.com" );
+            UserInfo ui = setup.getMgmtSvc().getAdminUserByEmail( "test-user-1@mockserver.com" );
             EntityManager em = setup.getEmf().getEntityManager( CassandraService.MANAGEMENT_APPLICATION_ID );
             User user = em.get( ui.getUuid(), User.class );
             assertEquals( "Test User", user.getName() );
             assertEquals( "Apigee", ( String ) user.getProperty( "company" ) );
 
-            OrganizationInfo orgInfo = setup.getMgmtSvc().getOrganizationByName( "org.apache.usergrid.test-org-1" );
+            OrganizationInfo orgInfo = setup.getMgmtSvc().getOrganizationByName( "test-org-1" );
             assertEquals( 5L, orgInfo.getProperties().get( "securityLevel" ) );
 
-            node = resource().path( "/management/organizations/org.apache.usergrid.test-org-1" )
+            node = mapper.valueToTree(resource().path( "/management/organizations/test-org-1" )
                     .queryParam( "access_token", superAdminToken() ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                    .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
             logNode( node );
             Assert.assertEquals( 5, node.get( "organization" ).get( OrganizationsResource.ORGANIZATION_PROPERTIES )
                                         .get( "securityLevel" ).asInt() );
 
-            node = resource().path( "/management/organizations/org.apache.usergrid.test-org-1" )
+            node = mapper.valueToTree(resource().path( "/management/organizations/test-org-1" )
                     .queryParam( "access_token", superAdminToken() ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                    .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
             Assert.assertEquals( 5, node.get( "organization" ).get( OrganizationsResource.ORGANIZATION_PROPERTIES )
                                         .get( "securityLevel" ).asInt() );
         }
@@ -109,8 +108,8 @@ public class OrganizationsResourceIT extends AbstractRestIT {
                 hashMap( "email", "create-duplicate-org@mockserver.com" ).map( "password", "password" )
                         .map( "organization", "create-duplicate-orgname-org" );
 
-        JsonNode node = resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+        JsonNode node = mapper.valueToTree(resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
         logNode( node );
         assertNotNull( node );
@@ -119,16 +118,16 @@ public class OrganizationsResourceIT extends AbstractRestIT {
                 .map( "password", "password" ).map( "organization", "create-duplicate-orgname-org" );
 
         try {
-            node = resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+            node = mapper.valueToTree(resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
+                    .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
         }
         catch ( Exception ex ) {
         }
         payload = hashMap( "grant_type", "password" ).map( "username", "create-dupe-orgname2" )
                 .map( "password", "password" );
         try {
-            node = resource().path( "/management/token" ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+            node = mapper.valueToTree(resource().path( "/management/token" ).accept( MediaType.APPLICATION_JSON )
+                    .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
             fail( "Should not have created user" );
         }
         catch ( Exception ex ) {
@@ -137,8 +136,8 @@ public class OrganizationsResourceIT extends AbstractRestIT {
 
         payload = hashMap( "username", "create-duplicate-org@mockserver.com" ).map( "grant_type", "password" )
                 .map( "password", "password" );
-        node = resource().path( "/management/token" ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+        node = mapper.valueToTree(resource().path( "/management/token" ).accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
         logNode( node );
     }
 
@@ -150,10 +149,10 @@ public class OrganizationsResourceIT extends AbstractRestIT {
                 .map( "password", "password" )
                 .map( "organization", "very-nice-org" );
 
-        JsonNode node = resource().path( "/management/organizations" )
+        JsonNode node = mapper.valueToTree(resource().path( "/management/organizations" )
             .accept( MediaType.APPLICATION_JSON )
             .type( MediaType.APPLICATION_JSON_TYPE )
-            .post( JsonNode.class, payload );
+            .post( HashMap.class, payload ));
 
         logNode( node );
         assertNotNull( node );
@@ -165,14 +164,14 @@ public class OrganizationsResourceIT extends AbstractRestIT {
 
         boolean failed = false;
         try {
-            node = resource().path( "/management/organizations" )
+            node = mapper.valueToTree(resource().path( "/management/organizations" )
                 .accept( MediaType.APPLICATION_JSON )
                 .type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+                .post( HashMap.class, payload ));
         }
         catch ( UniformInterfaceException ex ) {
             Assert.assertEquals( 400, ex.getResponse().getStatus() );
-            JsonNode errorJson = ex.getResponse().getEntity( JsonNode.class );
+            JsonNode errorJson = mapper.valueToTree(ex.getResponse().getEntity( HashMap.class ));
             Assert.assertEquals( "duplicate_unique_property_exists", errorJson.get("error").asText());
             failed = true;
         }
@@ -182,10 +181,10 @@ public class OrganizationsResourceIT extends AbstractRestIT {
             .map( "username", "create-dupe-orgname2" )
             .map( "password", "password" );
         try {
-            node = resource().path( "/management/token" )
+            node = mapper.valueToTree(resource().path( "/management/token" )
                 .accept( MediaType.APPLICATION_JSON )
                 .type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+                .post( HashMap.class, payload ));
             fail( "Should not have created user" );
         }
         catch ( Exception ex ) {
@@ -196,22 +195,22 @@ public class OrganizationsResourceIT extends AbstractRestIT {
         payload = hashMap( "username", "duplicate-email@mockserver.com" )
                 .map( "grant_type", "password" )
                 .map( "password", "password" );
-        node = resource().path( "/management/token" )
+        node = mapper.valueToTree(resource().path( "/management/token" )
                 .accept( MediaType.APPLICATION_JSON )
                 .type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+                .post( HashMap.class, payload ));
         logNode( node );
     }
 
     @Test
     public void testOrgPOSTParams() {
-        JsonNode node = resource().path( "/management/organizations" ).queryParam( "organization", "testOrgPOSTParams" )
+        JsonNode node = mapper.valueToTree(resource().path( "/management/organizations" ).queryParam( "organization", "testOrgPOSTParams" )
                 .queryParam( "username", "testOrgPOSTParams" ).queryParam( "grant_type", "password" )
                 .queryParam( "email", "testOrgPOSTParams@apigee.com" ).queryParam( "name", "testOrgPOSTParams" )
                 .queryParam( "password", "password" )
 
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_FORM_URLENCODED )
-                .post( JsonNode.class );
+                .post( HashMap.class ));
 
         assertEquals( "ok", node.get( "status" ).asText() );
     }
@@ -228,8 +227,8 @@ public class OrganizationsResourceIT extends AbstractRestIT {
         form.add( "name", "testOrgPOSTForm" );
         form.add( "password", "password" );
 
-        JsonNode node = resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_FORM_URLENCODED ).post( JsonNode.class, form );
+        JsonNode node = mapper.valueToTree(resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_FORM_URLENCODED ).post( HashMap.class, form ));
 
         assertEquals( "ok", node.get( "status" ).asText() );
     }
@@ -244,9 +243,9 @@ public class OrganizationsResourceIT extends AbstractRestIT {
         JsonNode node = null;
 
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization" ).queryParam( "access_token", mgmtToken )
+            node = mapper.valueToTree(resource().path( "/test-organization" ).queryParam( "access_token", mgmtToken )
                     .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                    .delete( JsonNode.class );
+                    .delete( HashMap.class ));
         }
         catch ( UniformInterfaceException uie ) {
             status = uie.getResponse().getClientResponseStatus();

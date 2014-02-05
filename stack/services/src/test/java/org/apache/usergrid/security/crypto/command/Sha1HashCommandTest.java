@@ -33,7 +33,7 @@ public class Sha1HashCommandTest {
     @Test
     public void hashAndAuthCorrect() throws UnsupportedEncodingException, NoSuchAlgorithmException {
 
-        String test = "I'm a  org.apache.usergrid.test password";
+        String test = "I'm a  test password";
 
         byte[] hashed = digest( test.getBytes( "UTF-8" ) );
 

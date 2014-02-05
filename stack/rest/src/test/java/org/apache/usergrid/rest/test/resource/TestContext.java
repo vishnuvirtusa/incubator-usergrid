@@ -44,7 +44,7 @@ public class TestContext {
     }
 
 
-    /** Create a org.apache.usergrid.test context */
+    /** Create a test context */
     public static TestContext create( JerseyTest test ) {
         return new TestContext( test );
     }

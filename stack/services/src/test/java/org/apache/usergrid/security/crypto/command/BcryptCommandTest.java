@@ -45,7 +45,7 @@ public class BcryptCommandTest {
         BcryptCommand command = new BcryptCommand();
         command.setDefaultIterations( cryptIterations );
 
-        String baseString = "I am a org.apache.usergrid.test password for hashing";
+        String baseString = "I am a test password for hashing";
 
         CredentialsInfo info = new CredentialsInfo();
 
@@ -75,7 +75,7 @@ public class BcryptCommandTest {
         BcryptCommand command = new BcryptCommand();
         command.setDefaultIterations( cryptIterations );
 
-        String baseString = "I am a org.apache.usergrid.test password for hashing";
+        String baseString = "I am a test password for hashing";
 
         CredentialsInfo info = new CredentialsInfo();
 
@@ -97,7 +97,7 @@ public class BcryptCommandTest {
         BcryptCommand command = new BcryptCommand();
         command.setDefaultIterations( cryptIterations );
 
-        String baseString = "I am a org.apache.usergrid.test password for hashing";
+        String baseString = "I am a test password for hashing";
 
         CredentialsInfo info = new CredentialsInfo();
 
@@ -115,7 +115,7 @@ public class BcryptCommandTest {
 
 
     /**
-     * Tests bcrypt hashing with a default number of rounds.  Note that via the console output, this org.apache.usergrid.test should take
+     * Tests bcrypt hashing with a default number of rounds.  Note that via the console output, this test should take
      * about 5 seconds to run since we want to force 500 ms per authentication attempt with bcrypt
      */
     @Test
@@ -127,7 +127,7 @@ public class BcryptCommandTest {
         BcryptCommand command = new BcryptCommand();
         command.setDefaultIterations( cryptIterations );
 
-        String baseString = "I am a org.apache.usergrid.test password for hashing";
+        String baseString = "I am a test password for hashing";
 
         CredentialsInfo info = new CredentialsInfo();
 

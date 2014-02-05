@@ -28,7 +28,7 @@ public class QueueResourceLong2IT extends AbstractQueueResourceIT {
     @Test
     public void transactionPageSize() throws InterruptedException {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 100;
 

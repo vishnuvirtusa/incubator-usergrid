@@ -94,7 +94,7 @@ public class BasicMongoTest extends AbstractMongoTest {
 
         // check we can find it when using the native entity manager
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Entity entity = em.get( id );
@@ -212,7 +212,7 @@ public class BasicMongoTest extends AbstractMongoTest {
 
         Thread.sleep( 5000 );
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Entity entity = em.get( id );
@@ -274,7 +274,7 @@ public class BasicMongoTest extends AbstractMongoTest {
 
         // check it has been deleted
 
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Entity entity = em.get( id );
@@ -329,7 +329,7 @@ public class BasicMongoTest extends AbstractMongoTest {
         assertFalse( cursor.hasNext() );
 
         // check it has been deleted
-        UUID appId = emf.lookupApplication( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
+        UUID appId = emf.lookupApplication( "test-organization/test-app" );
         EntityManager em = emf.getEntityManager( appId );
 
         Results results =

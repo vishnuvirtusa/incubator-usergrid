@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sun.jersey.api.client.WebResource;
 
@@ -36,6 +37,7 @@ public abstract class ValueResource extends NamedResource {
     private String cursor;
     private Integer limit;
     private UUID start;
+    private static ObjectMapper mapper = new ObjectMapper();
 
     private Map<String, String> customParams;
 
@@ -81,15 +83,17 @@ public abstract class ValueResource extends NamedResource {
 
     /** post to the entity set */
     protected JsonNode postInternal( Map<String, ?> entity ) {
-
-        return jsonMedia( withParams( withToken( resource() ) ) ).post( JsonNode.class, entity );
+        HashMap map = jsonMedia( withParams( withToken( resource() ) ) ).post( HashMap.class, entity );
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.valueToTree(map);
     }
 
 
     /** post to the entity set */
     protected JsonNode postInternal( Map<String, ?>[] entity ) {
-
-        return jsonMedia( withParams( withToken( resource() ) ) ).post( JsonNode.class, entity );
+        HashMap map = jsonMedia( withParams( withToken( resource() ) ) ).post( HashMap.class, entity );
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.valueToTree(map);
     }
 
 
@@ -101,8 +105,9 @@ public abstract class ValueResource extends NamedResource {
 
     /** put to the entity set */
     protected JsonNode putInternal( Map<String, ?> entity ) {
-
-        return jsonMedia( withParams( withToken( resource() ) ) ).put( JsonNode.class, entity );
+        HashMap map = jsonMedia( withParams( withToken( resource() ) ) ).put( HashMap.class, entity );
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.valueToTree(map);
     }
 
 
@@ -194,7 +199,7 @@ public abstract class ValueResource extends NamedResource {
             resource = resource.queryParam( "limit", limit.toString() );
         }
 
-        return jsonMedia( resource ).get( JsonNode.class );
+        return mapper.valueToTree( jsonMedia( resource ).get( HashMap.class ));
     }
 
 
@@ -217,7 +222,7 @@ public abstract class ValueResource extends NamedResource {
             }
         }
 
-        return jsonMedia( resource ).get( JsonNode.class );
+        return mapper.valueToTree( jsonMedia( resource ).get( HashMap.class ));
     }
 
 
@@ -302,6 +307,6 @@ public abstract class ValueResource extends NamedResource {
             resource = resource.queryParam( "limit", limit.toString() );
         }
 
-        return jsonMedia( resource ).delete( JsonNode.class );
+        return mapper.valueToTree( jsonMedia( resource ).delete( HashMap.class ));
     }
 }

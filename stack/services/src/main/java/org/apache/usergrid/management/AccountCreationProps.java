@@ -91,7 +91,7 @@ public interface AccountCreationProps {
             "usergrid.test-account.admin-user.username";
     public static final String PROPERTIES_TEST_ACCOUNT_ORGANIZATION = "usergrid.test-account.organization";
     public static final String PROPERTIES_TEST_ACCOUNT_APP = "usergrid.test-account.app";
-    public static final String PROPERTIES_SETUP_TEST_ACCOUNT = "usergrid.setup-org.apache.usergrid.test-account";
+    public static final String PROPERTIES_SETUP_TEST_ACCOUNT = "usergrid.setup-test-account";
 
     public boolean newOrganizationsNeedSysAdminApproval();
 

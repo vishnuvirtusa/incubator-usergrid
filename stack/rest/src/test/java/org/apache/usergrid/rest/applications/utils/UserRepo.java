@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.apache.usergrid.utils.UUIDUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sun.jersey.api.client.WebResource;
 
@@ -18,6 +19,7 @@ import static org.apache.usergrid.utils.MapUtils.hashMap;
 public enum UserRepo {
     INSTANCE;
 
+    protected static ObjectMapper mapper = new ObjectMapper();
     private final Map<String, UUID> loaded = new HashMap<String, UUID>();
 
 
@@ -53,9 +55,9 @@ public enum UserRepo {
     private UUID createUser( Map<String, String> payload, WebResource resource, String access_token ) {
 
         JsonNode response =
-                resource.path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).queryParam( "access_token", access_token )
+                mapper.valueToTree(resource.path( "/test-organization/test-app/users" ).queryParam( "access_token", access_token )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .post( JsonNode.class, payload );
+                        .post( HashMap.class, payload ));
 
         String idString = response.get( "entities" ).get( 0 ).get( "uuid" ).asText();
 

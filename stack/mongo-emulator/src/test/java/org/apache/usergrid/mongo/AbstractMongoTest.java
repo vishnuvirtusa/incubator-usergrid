@@ -55,8 +55,8 @@ public abstract class AbstractMongoTest {
         Mongo m = new Mongo( "localhost", 27017 );
         m.setWriteConcern( WriteConcern.SAFE );
 
-        DB db = m.getDB( "org.apache.usergrid.test-organization/org.apache.usergrid.test-app" );
-        db.authenticate( "org.apache.usergrid.test", "org.apache.usergrid.test".toCharArray() );
+        DB db = m.getDB( "test-organization/test-app" );
+        db.authenticate( "test", "test".toCharArray() );
         return db;
     }
 }

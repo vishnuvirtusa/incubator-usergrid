@@ -39,7 +39,7 @@ import static org.junit.Assert.assertTrue;
 @Concurrent()
 public class RolesServiceIT extends AbstractServiceIT {
 
-    /** Happy path org.apache.usergrid.test */
+    /** Happy path test */
     @Test
     public void createNewRolePost() throws Exception {
         createAndTestRoles( ServiceAction.POST, "manager", "Manager Title", 600000l );
@@ -47,7 +47,7 @@ public class RolesServiceIT extends AbstractServiceIT {
     }
 
 
-    /** Happy path org.apache.usergrid.test */
+    /** Happy path test */
     @Test
     public void createNewRolePut() throws Exception {
 
@@ -61,7 +61,7 @@ public class RolesServiceIT extends AbstractServiceIT {
         app.put( "title", "Manager Title" );
         app.put( "inactivity", 600000l );
 
-        // org.apache.usergrid.test creating a new role
+        // test creating a new role
         app.testRequest( ServiceAction.POST, 1, "roles" );
     }
 
@@ -72,7 +72,7 @@ public class RolesServiceIT extends AbstractServiceIT {
         app.put( "title", "Manager Title" );
         app.put( "inactivity", 600000l );
 
-        // org.apache.usergrid.test creating a new role
+        // test creating a new role
         ServiceResults results = app.testRequest( ServiceAction.POST, 1, "roles" );
 
         // check the results
@@ -93,7 +93,7 @@ public class RolesServiceIT extends AbstractServiceIT {
         app.put( "title", "Manager Title" );
         app.put( "inactivity", 600000l );
 
-        // org.apache.usergrid.test creating a new role
+        // test creating a new role
         ServiceResults results = app.testRequest( ServiceAction.POST, 1, "roles" );
 
         // check the results
@@ -211,7 +211,7 @@ public class RolesServiceIT extends AbstractServiceIT {
 
 
     /**
-     * Create the role with the action and info and org.apache.usergrid.test it's created successfully
+     * Create the role with the action and info and test it's created successfully
      *
      * @param action the action to take
      */
@@ -223,7 +223,7 @@ public class RolesServiceIT extends AbstractServiceIT {
 
         app.put( "inactivity", inactivity );
 
-        // org.apache.usergrid.test creating a new role
+        // test creating a new role
         ServiceResults results = app.testRequest( action, 1, "roles" );
 
         // check the results

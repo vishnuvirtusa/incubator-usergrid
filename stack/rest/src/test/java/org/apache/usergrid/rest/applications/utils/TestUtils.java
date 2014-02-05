@@ -24,7 +24,7 @@ import org.junit.Ignore;
 
 
 /** @author tnine */
-@Ignore("Not a org.apache.usergrid.test")
+@Ignore("Not a test")
 public class TestUtils {
 
     /** Get the uuid at the given index for the root node.  If it doesn't exist, null is returned */

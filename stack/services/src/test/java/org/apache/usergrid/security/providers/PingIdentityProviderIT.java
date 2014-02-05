@@ -42,7 +42,7 @@ public class PingIdentityProviderIT {
     @BeforeClass
     public static void setup() throws Exception {
         adminUser = setup.getMgmtSvc()
-                         .createAdminUser( "pinguser", "Ping User", "ping-user@usergrid.com", "org.apache.usergrid.test", false, false );
+                         .createAdminUser( "pinguser", "Ping User", "ping-user@usergrid.com", "test", false, false );
         organization = setup.getMgmtSvc().createOrganization( "ping-organization", adminUser, true );
         applicationId = setup.getMgmtSvc().createApplication( organization.getUuid(), "ping-application" ).getId();
     }

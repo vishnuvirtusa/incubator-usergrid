@@ -53,7 +53,7 @@ public class PropertiesResource extends AbstractContextResource {
 
         Properties props = management.getProperties();
 
-        // only works in org.apache.usergrid.test mode
+        // only works in test mode
         String testProp = ( String ) props.get( "usergrid.test" );
         if ( testProp == null || !Boolean.parseBoolean( testProp ) ) {
             throw new UnsupportedOperationException();
@@ -74,7 +74,7 @@ public class PropertiesResource extends AbstractContextResource {
 
         Properties props = management.getProperties();
 
-        // only works in org.apache.usergrid.test mode
+        // only works in test mode
         String testProp = ( String ) props.get( "usergrid.test" );
         if ( testProp == null || !Boolean.parseBoolean( testProp ) ) {
             throw new UnsupportedOperationException();

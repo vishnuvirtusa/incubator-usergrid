@@ -30,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import java.util.HashMap;
 
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.usergrid.utils.MapUtils.hashMap;
@@ -49,7 +50,7 @@ public class BasicIT extends AbstractRestIT {
 
     public void tryTest() {
         WebResource webResource = resource();
-        String json = webResource.path( "/org.apache.usergrid.test/hello" ).accept( MediaType.APPLICATION_JSON ).get( String.class );
+        String json = webResource.path( "/test/hello" ).accept( MediaType.APPLICATION_JSON ).get( String.class );
         assertTrue( isNotBlank( json ) );
 
         LOG.info( json );
@@ -66,8 +67,8 @@ public class BasicIT extends AbstractRestIT {
 
         String token = userToken( "ed@anuff.com", "sesame" );
         WebResource resource =
-                resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/suspects" ).queryParam( "access_token", token );
-        node = resource.accept( MediaType.APPLICATION_JSON ).post( JsonNode.class );
+                resource().path( "/test-organization/test-app/suspects" ).queryParam( "access_token", token );
+        node = mapper.valueToTree(resource.accept( MediaType.APPLICATION_JSON ).post( HashMap.class ));
 
 
         String uuid = "4dadf156-c82f-4eb7-a437-3e574441c4db";
@@ -77,8 +78,8 @@ public class BasicIT extends AbstractRestIT {
         Map<String, String> payload = hashMap( "hair", "brown" ).map( "sex", "male" ).map( "eyes", "green" )
                 .map( "name", uuid.replace( '-', '0' ) ).map( "build", "thin" ).map( "height", "6 4" );
 
-        node = resource.queryParam( "access_token", token ).accept( MediaType.APPLICATION_JSON )
-                       .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+        node = mapper.valueToTree(resource.queryParam( "access_token", token ).accept( MediaType.APPLICATION_JSON )
+                       .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
         logNode( node );
 
@@ -87,8 +88,8 @@ public class BasicIT extends AbstractRestIT {
         payload = hashMap( "hair", "red" ).map( "sex", "female" ).map( "eyes", "blue" ).map( "name", uuid )
                 .map( "build", "heavy" ).map( "height", "5 9" );
 
-        node = resource.accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                       .post( JsonNode.class, payload );
+        node = mapper.valueToTree(resource.accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
+                       .post( HashMap.class, payload ));
 
         logNode( node );
     }
@@ -100,9 +101,9 @@ public class BasicIT extends AbstractRestIT {
 
         try {
             WebResource resource = resource();
-            resource.path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/foobarNonexistent" );
+            resource.path( "/test-organization/test-app/users/foobarNonexistent" );
             resource.accept( MediaType.APPLICATION_JSON );
-            node = resource.get( JsonNode.class );
+            node = mapper.valueToTree(resource.get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             logNode( node );
@@ -115,13 +116,13 @@ public class BasicIT extends AbstractRestIT {
     public void testToken() {
         JsonNode node = null;
 
-        // org.apache.usergrid.test get token for admin user with bad password
+        // test get token for admin user with bad password
 
         boolean err_thrown = false;
         try {
-            node = resource().path( "/management/token" ).queryParam( "grant_type", "password" )
-                    .queryParam( "username", "org.apache.usergrid.test@usergrid.com" ).queryParam( "password", "blahblah" )
-                    .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+            node = mapper.valueToTree(resource().path( "/management/token" ).queryParam( "grant_type", "password" )
+                    .queryParam( "username", "test@usergrid.com" ).queryParam( "password", "blahblah" )
+                    .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             assertEquals( "Should receive a 400 Bad Request", 400, e.getResponse().getStatus() );
@@ -129,28 +130,28 @@ public class BasicIT extends AbstractRestIT {
         }
         assertTrue( "Error should have been thrown", err_thrown );
 
-        // org.apache.usergrid.test get token for admin user with correct default password
+        // test get token for admin user with correct default password
 
         String mgmtToken = adminToken();
-        // org.apache.usergrid.test get admin user with token
+        // test get admin user with token
 
-        node = resource().path( "/management/users/org.apache.usergrid.test@usergrid.com" ).queryParam( "access_token", mgmtToken )
-                .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+        node = mapper.valueToTree(resource().path( "/management/users/test@usergrid.com" ).queryParam( "access_token", mgmtToken )
+                .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
 
         logNode( node );
 
         assertEquals( "Test User",
-                node.get( "data" ).get( "organizations" ).get( "org.apache.usergrid.test-organization" ).get( "users" ).get( "org.apache.usergrid.test" )
+                node.get( "data" ).get( "organizations" ).get( "test-organization" ).get( "users" ).get( "test" )
                     .get( "name" ).asText() );
 
 
-        // org.apache.usergrid.test login user with incorrect password
+        // test login user with incorrect password
 
         err_thrown = false;
         try {
-            node = resource().path( "/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "password" )
+            node = mapper.valueToTree(resource().path( "/test-app/token" ).queryParam( "grant_type", "password" )
                     .queryParam( "username", "ed@anuff.com" ).queryParam( "password", "blahblah" )
-                    .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+                    .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             assertEquals( "Should receive a 400 Bad Request", 400, e.getResponse().getStatus() );
@@ -158,13 +159,13 @@ public class BasicIT extends AbstractRestIT {
         }
         assertTrue( "Error should have been thrown", err_thrown );
 
-        // org.apache.usergrid.test login user with incorrect pin
+        // test login user with incorrect pin
 
         err_thrown = false;
         try {
-            node = resource().path( "/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "pin" )
+            node = mapper.valueToTree(resource().path( "/test-app/token" ).queryParam( "grant_type", "pin" )
                     .queryParam( "username", "ed@anuff.com" ).queryParam( "pin", "4321" )
-                    .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+                    .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             assertEquals( "Should receive a 400 Bad Request", 400, e.getResponse().getStatus() );
@@ -172,24 +173,24 @@ public class BasicIT extends AbstractRestIT {
         }
         assertTrue( "Error should have been thrown", err_thrown );
 
-        // org.apache.usergrid.test login user with correct password
+        // test login user with correct password
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "password" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" ).queryParam( "grant_type", "password" )
                 .queryParam( "username", "ed@anuff.com" ).queryParam( "password", "sesame" )
-                .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+                .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
 
         logNode( node );
 
         String user_access_token = node.get( "access_token" ).asText();
         assertTrue( isNotBlank( user_access_token ) );
 
-        // org.apache.usergrid.test get app user collection with insufficient permissions
+        // test get app user collection with insufficient permissions
 
         err_thrown = false;
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" )
+            node = mapper.valueToTree(resource().path( "/test-organization/test-app/users" )
                     .queryParam( "access_token", user_access_token ).accept( MediaType.APPLICATION_JSON )
-                    .get( JsonNode.class );
+                    .get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             if ( e.getResponse().getStatus() != 401 ) {
@@ -199,21 +200,21 @@ public class BasicIT extends AbstractRestIT {
         }
         // assertTrue("Error should have been thrown", err_thrown);
 
-        // org.apache.usergrid.test get app user with sufficient permissions
+        // test get app user with sufficient permissions
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/edanuff" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/users/edanuff" )
                 .queryParam( "access_token", user_access_token ).accept( MediaType.APPLICATION_JSON )
-                .get( JsonNode.class );
+                .get( HashMap.class ));
         logNode( node );
 
         assertEquals( 1, node.get( "entities" ).size() );
 
-        // org.apache.usergrid.test get app user collection with bad token
+        // test get app user collection with bad token
 
         err_thrown = false;
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).queryParam( "access_token", "blahblahblah" )
-                    .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+            node = mapper.valueToTree(resource().path( "/test-organization/test-app/users" ).queryParam( "access_token", "blahblahblah" )
+                    .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             if ( e.getResponse().getStatus() != 401 ) {
@@ -223,12 +224,12 @@ public class BasicIT extends AbstractRestIT {
         }
         assertTrue( "Error should have been thrown", err_thrown );
 
-        // org.apache.usergrid.test get app user collection with no token
+        // test get app user collection with no token
 
         err_thrown = false;
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).accept( MediaType.APPLICATION_JSON )
-                    .get( JsonNode.class );
+            node = mapper.valueToTree(resource().path( "/test-organization/test-app/users" ).accept( MediaType.APPLICATION_JSON )
+                    .get( HashMap.class ));
         }
         catch ( UniformInterfaceException e ) {
             assertEquals( "Should receive a 401 Unauthorized", 401, e.getResponse().getStatus() );
@@ -236,70 +237,70 @@ public class BasicIT extends AbstractRestIT {
         }
         assertTrue( "Error should have been thrown", err_thrown );
 
-        // org.apache.usergrid.test login app user with pin
+        // test login app user with pin
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "pin" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" ).queryParam( "grant_type", "pin" )
                 .queryParam( "username", "ed@anuff.com" ).queryParam( "pin", "1234" )
-                .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+                .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
 
         logNode( node );
 
         user_access_token = node.get( "access_token" ).asText();
         assertTrue( isNotBlank( user_access_token ) );
 
-        // org.apache.usergrid.test set app user pin
+        // test set app user pin
 
         MultivaluedMap<String, String> formData = new MultivaluedMapImpl();
         formData.add( "pin", "5678" );
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/ed@anuff.com/setpin" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/users/ed@anuff.com/setpin" )
                 .queryParam( "access_token", user_access_token ).type( "application/x-www-form-urlencoded" )
-                .post( JsonNode.class, formData );
+                .post( HashMap.class, formData ));
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "pin" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" ).queryParam( "grant_type", "pin" )
                 .queryParam( "username", "ed@anuff.com" ).queryParam( "pin", "5678" )
-                .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+                .accept( MediaType.APPLICATION_JSON ).get( HashMap.class ));
 
         logNode( node );
 
         user_access_token = node.get( "access_token" ).asText();
         assertTrue( isNotBlank( user_access_token ) );
 
-        // org.apache.usergrid.test user org.apache.usergrid.test extension resource
+        // test user test extension resource
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/ed@anuff.com/org.apache.usergrid.test" ).get( JsonNode.class );
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/users/ed@anuff.com/test" ).get( HashMap.class ));
         logNode( node );
 
-        // org.apache.usergrid.test create user with guest permissions (no token)
+        // test create user with guest permissions (no token)
 
         Map<String, String> payload =
                 hashMap( "email", "ed.anuff@gmail.com" ).map( "username", "ed.anuff" ).map( "name", "Ed Anuff" )
                         .map( "password", "sesame" ).map( "pin", "1234" );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/users" ).accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
         logNode( node );
 
         assertEquals( "ed.anuff", node.get( "entities" ).get( 0 ).get( "username" ).asText() );
 
-        // org.apache.usergrid.test create device with guest permissions (no token)
+        // test create device with guest permissions (no token)
 
         payload = hashMap( "foo", "bar" );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/devices/" + UUID.randomUUID() )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/devices/" + UUID.randomUUID() )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                .put( JsonNode.class, payload );
+                .put( HashMap.class, payload ));
 
         logNode( node );
 
-        // org.apache.usergrid.test create entity with guest permissions (no token), should fail
+        // test create entity with guest permissions (no token), should fail
 
         payload = hashMap( "foo", "bar" );
 
         err_thrown = false;
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/items" ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+            node = mapper.valueToTree(resource().path( "/test-organization/test-app/items" ).accept( MediaType.APPLICATION_JSON )
+                    .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
         }
         catch ( UniformInterfaceException e ) {
             assertEquals( "Should receive a 401 Unauthorized", 401, e.getResponse().getStatus() );

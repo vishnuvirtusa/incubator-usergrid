@@ -560,8 +560,6 @@
       <scope>test</scope>
     </dependency>
 
-
-
     <dependency>
       <groupId>org.apache.usergrid</groupId>
       <artifactId>usergrid-java-client</artifactId>

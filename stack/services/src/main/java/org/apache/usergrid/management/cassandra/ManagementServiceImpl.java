@@ -298,7 +298,7 @@ public class ManagementServiceImpl implements ManagementService {
 
             if ( anyNull( test_app_name, test_organization_name, test_admin_username, test_admin_name, test_admin_email,
                     test_admin_password ) ) {
-                logger.warn( "Missing values for org.apache.usergrid.test app, check properties.  Skipping org.apache.usergrid.test app setup..." );
+                logger.warn( "Missing values for test app, check properties.  Skipping test app setup..." );
                 return;
             }
 
@@ -805,7 +805,7 @@ public class ManagementServiceImpl implements ManagementService {
                 user.getEmail(), user.getConfirmed(), user.getActivated(), user.getDisabled(),
                 user.getDynamicProperties() );
 
-        // special case for sysadmin and org.apache.usergrid.test account only
+        // special case for sysadmin and test account only
         if ( !user.getEmail().equals( properties.getProperty( PROPERTIES_SYSADMIN_LOGIN_EMAIL ) ) && !user.getEmail()
                                                                                                           .equals(
                                                                                                                   properties

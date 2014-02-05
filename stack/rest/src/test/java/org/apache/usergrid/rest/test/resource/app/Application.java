@@ -24,11 +24,14 @@ import org.apache.usergrid.rest.test.resource.ValueResource;
 import org.apache.usergrid.rest.test.resource.app.queue.DevicesCollection;
 import org.apache.usergrid.rest.test.resource.app.queue.QueuesCollection;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 
 
 /** @author tnine */
 public class Application extends ValueResource {
 
+    private static ObjectMapper mapper = new ObjectMapper();
 
     /**
      * @param parent
@@ -43,9 +46,9 @@ public class Application extends ValueResource {
 
         String url = String.format( "%s/token", url() );
 
-        JsonNode node = resource().path( url ).queryParam( "grant_type", "password" ).queryParam( "username", username )
+        JsonNode node = mapper.valueToTree(resource().path( url ).queryParam( "grant_type", "password" ).queryParam( "username", username )
                 .queryParam( "password", password ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
 
         return node.get( "access_token" ).asText();
     }

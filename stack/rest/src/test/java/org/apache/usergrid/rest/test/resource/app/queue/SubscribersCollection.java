@@ -19,11 +19,14 @@ package org.apache.usergrid.rest.test.resource.app.queue;
 import org.apache.usergrid.rest.test.resource.CollectionResource;
 import org.apache.usergrid.rest.test.resource.NamedResource;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
 
 
 /** @author tnine */
 public class SubscribersCollection extends CollectionResource {
 
+    protected static ObjectMapper mapper = new ObjectMapper();
     private String queueName;
 
 
@@ -40,7 +43,7 @@ public class SubscribersCollection extends CollectionResource {
 
     public JsonNode unsubscribe( String queueName ) {
         this.queueName = queueName;
-        return jsonMedia( withToken( resource() ) ).delete( JsonNode.class );
+        return mapper.valueToTree(jsonMedia( withToken( resource() ) ).delete( HashMap.class ));
     }
 
 

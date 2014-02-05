@@ -42,6 +42,7 @@ import org.apache.usergrid.rest.AbstractRestIT;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.core.util.MultivaluedMapImpl;
+import java.util.HashMap;
 
 import static org.apache.usergrid.management.AccountCreationProps.PROPERTIES_ADMIN_RESETPW_URL;
 import static org.apache.usergrid.management.AccountCreationProps.PROPERTIES_ADMIN_USERS_REQUIRE_CONFIRMATION;
@@ -74,18 +75,18 @@ public class RegistrationIT extends AbstractRestIT {
             setTestProperty( PROPERTIES_SYSADMIN_EMAIL, "sysadmin-1@mockserver.com" );
 
             JsonNode node =
-                    postCreateOrgAndAdmin( "org.apache.usergrid.test-org-1", "org.apache.usergrid.test-user-1", "Test User", "org.apache.usergrid.test-user-1@mockserver.com",
+                    postCreateOrgAndAdmin( "test-org-1", "test-user-1", "Test User", "test-user-1@mockserver.com",
                             "testpassword" );
 
             UUID owner_uuid =
                     UUID.fromString( node.findPath( "data" ).findPath( "owner" ).findPath( "uuid" ).asText() );
 
-            List<Message> inbox = org.jvnet.mock_javamail.Mailbox.get( "org.apache.usergrid.test-user-1@mockserver.com" );
+            List<Message> inbox = org.jvnet.mock_javamail.Mailbox.get( "test-user-1@mockserver.com" );
 
             assertFalse( inbox.isEmpty() );
 
             Message account_confirmation_message = inbox.get( 0 );
-            assertEquals( "User Account Confirmation: org.apache.usergrid.test-user-1@mockserver.com",
+            assertEquals( "User Account Confirmation: test-user-1@mockserver.com",
                     account_confirmation_message.getSubject() );
 
             String token = getTokenFromMessage( account_confirmation_message );
@@ -94,28 +95,28 @@ public class RegistrationIT extends AbstractRestIT {
             setup.getMgmtSvc().disableAdminUser( owner_uuid );
             try {
                 resource().path( "/management/token" ).queryParam( "grant_type", "password" )
-                        .queryParam( "username", "org.apache.usergrid.test-user-1" ).queryParam( "password", "testpassword" )
+                        .queryParam( "username", "test-user-1" ).queryParam( "password", "testpassword" )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .get( JsonNode.class );
+                        .get( String.class );
                 fail( "request for disabled user should fail" );
             }
             catch ( UniformInterfaceException uie ) {
                 ClientResponse.Status status = uie.getResponse().getClientResponseStatus();
-                JsonNode body = uie.getResponse().getEntity( JsonNode.class );
+                JsonNode body = mapper.valueToTree(uie.getResponse().getEntity( HashMap.class ));
                 assertEquals( "user disabled", body.findPath( "error_description" ).asText() );
             }
 
             setup.getMgmtSvc().deactivateUser( CassandraService.MANAGEMENT_APPLICATION_ID, owner_uuid );
             try {
                 resource().path( "/management/token" ).queryParam( "grant_type", "password" )
-                        .queryParam( "username", "org.apache.usergrid.test-user-1" ).queryParam( "password", "testpassword" )
+                        .queryParam( "username", "test-user-1" ).queryParam( "password", "testpassword" )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .get( JsonNode.class );
+                        .get( HashMap.class );
                 fail( "request for deactivated user should fail" );
             }
             catch ( UniformInterfaceException uie ) {
                 ClientResponse.Status status = uie.getResponse().getClientResponseStatus();
-                JsonNode body = uie.getResponse().getEntity( JsonNode.class );
+                JsonNode body = mapper.valueToTree(uie.getResponse().getEntity( HashMap.class ));
                 assertEquals( "user not activated", body.findPath( "error_description" ).asText() );
             }
 
@@ -123,7 +124,7 @@ public class RegistrationIT extends AbstractRestIT {
             // svcSetup.getMgmtSvc().handleConfirmationTokenForAdminUser(
             // owner_uuid, token));
 
-            // need to enable JSP usage in the org.apache.usergrid.test version of Jetty to make this org.apache.usergrid.test run
+            // need to enable JSP usage in the test version of Jetty to make this test run
             //      String response = resource()
             //        .path("/management/users/" + owner_uuid + "/confirm").get(String.class);
             //      logger.info(response);
@@ -154,8 +155,8 @@ public class RegistrationIT extends AbstractRestIT {
                 hashMap( "email", email ).map( "username", username ).map( "name", name ).map( "password", password )
                         .map( "organization", organizationName );
 
-        node = resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+        node = mapper.valueToTree(resource().path( "/management/organizations" ).accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
         assertNotNull( node );
         logNode( node );
@@ -171,9 +172,9 @@ public class RegistrationIT extends AbstractRestIT {
         formData.add( "email", email );
         formData.add( "password", password );
 
-        node = resource().path( "/management/organizations/" + organizationName + "/users" )
+        node = mapper.valueToTree(resource().path( "/management/organizations/" + organizationName + "/users" )
                 .queryParam( "access_token", token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_FORM_URLENCODED ).post( JsonNode.class, formData );
+                .type( MediaType.APPLICATION_FORM_URLENCODED ).post( HashMap.class, formData ));
 
         assertNotNull( node );
         logNode( node );
@@ -196,9 +197,9 @@ public class RegistrationIT extends AbstractRestIT {
             MultivaluedMap formData = new MultivaluedMapImpl();
             formData.add( "foo", "bar" );
             try {
-                resource().path( "/management/organizations/org.apache.usergrid.test-organization/users/org.apache.usergrid.test-admin-null@mockserver.com" )
+                resource().path( "/management/organizations/test-organization/users/test-admin-null@mockserver.com" )
                         .queryParam( "access_token", t ).accept( MediaType.APPLICATION_JSON )
-                        .type( MediaType.APPLICATION_FORM_URLENCODED ).put( JsonNode.class, formData );
+                        .type( MediaType.APPLICATION_FORM_URLENCODED ).put( formData );
             }
             catch ( UniformInterfaceException e ) {
                 assertEquals( "Should receive a 400 Not Found", 400, e.getResponse().getStatus() );
@@ -222,7 +223,7 @@ public class RegistrationIT extends AbstractRestIT {
             setTestProperty( PROPERTIES_SYSADMIN_EMAIL, "sysadmin-1@mockserver.com" );
 
             String t = adminToken();
-            postAddAdminToOrg( "org.apache.usergrid.test-organization", "org.apache.usergrid.test-admin@mockserver.com", "password", t );
+            postAddAdminToOrg( "test-organization", "test-admin@mockserver.com", "password", t );
         }
         finally {
             setTestProperties( originalProperties );
@@ -245,7 +246,7 @@ public class RegistrationIT extends AbstractRestIT {
             // this should send resetpwd  link in email to newly added org admin user(that did not exist
             ///in usergrid) and "User Invited To Organization" email
             String adminToken = adminToken();
-            JsonNode node = postAddAdminToOrg( "org.apache.usergrid.test-organization", "org.apache.usergrid.test-admin-nopwd@mockserver.com", "", adminToken );
+            JsonNode node = postAddAdminToOrg( "test-organization", "test-admin-nopwd@mockserver.com", "", adminToken );
             String uuid = node.get( "data" ).get( "user" ).get( "uuid" ).asText();
             UUID userId = UUID.fromString( uuid );
 
@@ -253,7 +254,7 @@ public class RegistrationIT extends AbstractRestIT {
             String reset_url = String.format( setup.getProps().getProperty( PROPERTIES_ADMIN_RESETPW_URL ), uuid );
             String invited = "User Invited To Organization";
 
-            Message[] msgs = getMessages( "mockserver.com", "org.apache.usergrid.test-admin-nopwd", "password" );
+            Message[] msgs = getMessages( "mockserver.com", "test-admin-nopwd", "password" );
 
             // 1 Invite and 1 resetpwd
             assertTrue( msgs.length == 2 );
@@ -303,7 +304,7 @@ public class RegistrationIT extends AbstractRestIT {
             // already exists in usergrid)
             // only "User Invited To Organization" email
             String adminToken = adminToken();
-            JsonNode node = postAddAdminToOrg( "org.apache.usergrid.test-organization", "AdminUserFromOtherOrg@otherorg.com", "password1",
+            JsonNode node = postAddAdminToOrg( "test-organization", "AdminUserFromOtherOrg@otherorg.com", "password1",
                     adminToken );
             String uuid = node.get( "data" ).get( "user" ).get( "uuid" ).asText();
             UUID userId = UUID.fromString( uuid );

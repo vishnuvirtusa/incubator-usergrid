@@ -135,7 +135,7 @@ public class OwnershipResourceIT extends AbstractRestIT {
 
         // we should see both devices when loaded from the root application
 
-        // org.apache.usergrid.test for user 1
+        // test for user 1
 
         devices = context.withUser( user1 ).application().devices();
         data = devices.device( "device1" ).get();
@@ -148,7 +148,7 @@ public class OwnershipResourceIT extends AbstractRestIT {
         assertNotNull( data );
         assertEquals( "device2", getEntity( data, 0 ).get( "name" ).asText() );
 
-        // org.apache.usergrid.test for user 2
+        // test for user 2
         data = context.withUser( user2 ).application().devices().device( "device1" ).get();
 
         assertNotNull( data );
@@ -255,7 +255,7 @@ public class OwnershipResourceIT extends AbstractRestIT {
 
         // we should see both devices when loaded from the root application
 
-        // org.apache.usergrid.test for user 1
+        // test for user 1
 
         CustomCollection restaurants = context.withUser( user1 ).application().collection( "restaurants" );
         data = restaurants.entity( "4peaks" ).get();
@@ -268,7 +268,7 @@ public class OwnershipResourceIT extends AbstractRestIT {
         assertNotNull( data );
         assertEquals( "arrogantbutcher", getEntity( data, 0 ).get( "name" ).asText() );
 
-        // org.apache.usergrid.test for user 2
+        // test for user 2
         restaurants = context.withUser( user1 ).application().collection( "restaurants" );
         data = restaurants.entity( "4peaks" ).get();
 

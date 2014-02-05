@@ -55,7 +55,7 @@ public class UpdateGroupIT extends AbstractRestIT {
             groupMap.put( "title", "Old Title" );
             groupMap.put( "path", groupPath );
             String path = context.getOrgName() + "/" + context.getAppName() + "/groups";
-            JsonNode groupJson = webResourceBuilder( path ).post( JsonNode.class, groupMap );
+            JsonNode groupJson = mapper.valueToTree(webResourceBuilder( path ).post( HashMap.class, groupMap ));
             groupId = groupJson.get( "entities" ).get( 0 ).get( "uuid" ).asText();
         }
         catch ( UniformInterfaceException e ) {
@@ -69,7 +69,7 @@ public class UpdateGroupIT extends AbstractRestIT {
             Map<String, Object> group = new HashMap<String, Object>();
             group.put( "title", "New Title" );
             String path = context.getOrgName() + "/" + context.getAppName() + "/groups/" + groupPath;
-            webResourceBuilder( path ).put( JsonNode.class, group );
+            webResourceBuilder( path ).put( group );
         }
         catch ( UniformInterfaceException e ) {
             fail( "Error updating group: " + IOUtils.toString( e.getResponse().getEntityInputStream() ) );
@@ -82,7 +82,7 @@ public class UpdateGroupIT extends AbstractRestIT {
             Map<String, Object> group = new HashMap<String, Object>();
             group.put( "title", "Even Newer Title" );
             String path = context.getOrgName() + "/" + context.getAppName() + "/groups/" + groupId;
-            webResourceBuilder( path ).put( JsonNode.class, group );
+            webResourceBuilder( path ).put( group );
         }
         catch ( UniformInterfaceException e ) {
             fail( "Error updating group: " + IOUtils.toString( e.getResponse().getEntityInputStream() ) );
@@ -100,7 +100,7 @@ public class UpdateGroupIT extends AbstractRestIT {
 
     private void assertTitle( String groupId, String title ) {
         String path = context.getOrgName() + "/" + context.getAppName() + "/groups/" + groupId;
-        JsonNode groupJson = webResourceBuilder( path ).get( JsonNode.class );
+        JsonNode groupJson = mapper.valueToTree(webResourceBuilder( path ).get( HashMap.class ));
         Assert.assertEquals( title, groupJson.get( "entities" ).get( 0 ).get( "title" ).asText() );
     }
 }

@@ -44,7 +44,7 @@ public class FacebookProviderIT {
     public static void setup() throws Exception {
         providerFactory = ServiceITSuite.cassandraResource.getBean( SignInProviderFactory.class );
         UserInfo adminUser = setup.getMgmtSvc()
-                                  .createAdminUser( "fbuser", "Facebook User", "user@facebook.com", "org.apache.usergrid.test", false,
+                                  .createAdminUser( "fbuser", "Facebook User", "user@facebook.com", "test", false,
                                           false );
         OrganizationInfo organization = setup.getMgmtSvc().createOrganization( "fb-organization", adminUser, true );
         applicationId = setup.getMgmtSvc().createApplication( organization.getUuid(), "fb-application" ).getId();

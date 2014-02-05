@@ -28,6 +28,7 @@ import javax.ws.rs.core.UriBuilder;
 
 import org.apache.usergrid.cassandra.Concurrent;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -53,7 +54,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Base class for testing Usergrid Jersey-based REST API. Implementations should model the paths mapped, not the method
- * names. For example, to org.apache.usergrid.test the the "password" mapping on applications.users.UserResource for a PUT method, the org.apache.usergrid.test
+ * names. For example, to test the the "password" mapping on applications.users.UserResource for a PUT method, the test
  * method(s) should following the following naming convention: test_[HTTP verb]_[action mapping]_[ok|fail][_[specific
  * failure condition if multiple]
  */
@@ -61,7 +62,6 @@ import static org.junit.Assert.assertTrue;
 public abstract class AbstractRestIT extends JerseyTest {
     private static final Logger LOG = LoggerFactory.getLogger( AbstractRestIT.class );
     private static boolean usersSetup = false;
-
 
     private static ClientConfig clientConfig = new DefaultClientConfig();
 
@@ -78,10 +78,13 @@ public abstract class AbstractRestIT extends JerseyTest {
 
     private static final URI baseURI = setup.getBaseURI();
 
+    protected static ObjectMapper mapper = new ObjectMapper();
+
 
     static {
         clientConfig.getFeatures().put( JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE );
-        descriptor = new WebAppDescriptor.Builder( "org.apache.usergrid.rest" ).clientConfig( clientConfig ).build();
+        descriptor = new WebAppDescriptor.Builder( 
+                "org.apache.usergrid.rest" ).clientConfig( clientConfig ).build();
         dumpClasspath( AbstractRestIT.class.getClassLoader() );
     }
 
@@ -145,16 +148,17 @@ public abstract class AbstractRestIT extends JerseyTest {
 
         // TODO T.N. This is a filthy hack and I should be ashamed of it (which
         // I am). There's a bug in the grizzly server when it's restarted per
-        // org.apache.usergrid.test, and until we can upgrade versions this is the workaround. Backs
+        // test, and until we can upgrade versions this is the workaround. Backs
         // off with each attempt to allow the server to catch up
 
 
         setUserPassword( "ed@anuff.com", "sesame" );
 
-        client = new Client( "org.apache.usergrid.test-organization", "org.apache.usergrid.test-app" ).withApiUrl(
+        client = new Client( "test-organization", "test-app" ).withApiUrl(
                 UriBuilder.fromUri( "http://localhost/" ).port( setup.getTomcatPort() ).build().toString() );
 
-        org.apache.usergrid.java.client.response.ApiResponse response = client.authorizeAppUser( "ed@anuff.com", "sesame" );
+        org.apache.usergrid.java.client.response.ApiResponse response = 
+                client.authorizeAppUser( "ed@anuff.com", "sesame" );
 
         assertTrue( response != null && response.getError() == null );
     }
@@ -186,9 +190,12 @@ public abstract class AbstractRestIT extends JerseyTest {
 
         setUserPassword( "ed@anuff.com", "sesame" );
 
-        JsonNode node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "password" )
-                .queryParam( "username", name ).queryParam( "password", password ).accept( MediaType.APPLICATION_JSON )
-                .get( JsonNode.class );
+        JsonNode node = mapper.valueToTree(resource().path( "/test-organization/test-app/token" )
+                .queryParam( "grant_type", "password" )
+                .queryParam( "username", name )
+                .queryParam( "password", password )
+                .accept( MediaType.APPLICATION_JSON )
+                .get( HashMap.class ));
 
         String userToken = node.get( "access_token" ).asText();
         LOG.info( "returning user token: {}", userToken );
@@ -198,10 +205,14 @@ public abstract class AbstractRestIT extends JerseyTest {
 
     public void createUser( String username, String email, String password, String name ) {
         try {
-            JsonNode node =
-                    resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/token" ).queryParam( "grant_type", "password" )
-                            .queryParam( "username", username ).queryParam( "password", password )
-                            .accept( MediaType.APPLICATION_JSON ).get( JsonNode.class );
+            HashMap map = resource().path( "/test-organization/test-app/token" )
+                    .queryParam( "grant_type", "password" )
+                    .queryParam( "username", username )
+                    .queryParam( "password", password )
+                    .accept( MediaType.APPLICATION_JSON )
+                    .get( HashMap.class );
+
+            JsonNode node = mapper.valueToTree( map );
             if ( getError( node ) == null ) {
                 return;
             }
@@ -214,12 +225,17 @@ public abstract class AbstractRestIT extends JerseyTest {
 
 
         Map<String, String> payload =
-                hashMap( "email", email ).map( "username", username ).map( "name", name ).map( "password", password )
+                hashMap( "email", email )
+                        .map( "username", username )
+                        .map( "name", name )
+                        .map( "password", password )
                         .map( "pin", "1234" );
 
-        resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).queryParam( "access_token", adminAccessToken )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+        resource().path( "/test-organization/test-app/users" )
+                .queryParam( "access_token", adminAccessToken )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .post( payload );
     }
 
 
@@ -232,17 +248,20 @@ public abstract class AbstractRestIT extends JerseyTest {
 
 
         // change the password as admin. The old password isn't required
-        JsonNode node = resource().path( String.format( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/%s/password", username ) )
-                .queryParam( "access_token", adminAccessToken ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, data );
+        HashMap map = resource().path( String.format( "/test-organization/test-app/users/%s/password", username ) )
+                .queryParam( "access_token", adminAccessToken )
+                .accept( MediaType.APPLICATION_JSON )
+                .type( MediaType.APPLICATION_JSON_TYPE )
+                .post( HashMap.class, data );
 
+        JsonNode node = mapper.valueToTree( map );
         assertNull( getError( node ) );
     }
 
 
-    /** Acquire the management token for the org.apache.usergrid.test@usergrid.com user with the default password */
+    /** Acquire the management token for the test@usergrid.com user with the default password */
     protected String adminToken() {
-        adminAccessToken = mgmtToken( "org.apache.usergrid.test@usergrid.com", "org.apache.usergrid.test" );
+        adminAccessToken = mgmtToken( "test@usergrid.com", "test" );
         return adminAccessToken;
     }
 
@@ -253,12 +272,16 @@ public abstract class AbstractRestIT extends JerseyTest {
     }
 
 
-    /** Acquire the management token for the org.apache.usergrid.test@usergrid.com user with the given password */
+    /** Acquire the management token for the test@usergrid.com user with the given password */
     protected String mgmtToken( String user, String password ) {
-        JsonNode node = resource().path( "/management/token" ).queryParam( "grant_type", "password" )
-                .queryParam( "username", user ).queryParam( "password", password ).accept( MediaType.APPLICATION_JSON )
-                .get( JsonNode.class );
-
+        HashMap map = resource().path( "/management/token" )
+                .queryParam( "grant_type", "password" )
+                .queryParam( "username", user )
+                .queryParam( "password", password )
+                .accept( MediaType.APPLICATION_JSON )
+                .get( HashMap.class );
+        
+        JsonNode node = mapper.valueToTree( map );
         String mgmToken = node.get( "access_token" ).asText();
         LOG.info( "got mgmt token: {}", mgmToken );
         return mgmToken;
@@ -307,7 +330,7 @@ public abstract class AbstractRestIT extends JerseyTest {
 
     /** convenience to return a ready WebResource.Builder in a single call */
     protected WebResource.Builder appPath( String path ) {
-        return resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/" + path ).queryParam( "access_token", access_token )
+        return resource().path( "/test-organization/test-app/" + path ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE );
     }
 

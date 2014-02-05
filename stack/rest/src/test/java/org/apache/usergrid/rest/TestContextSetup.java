@@ -12,7 +12,7 @@ import com.sun.jersey.test.framework.JerseyTest;
 
 /**
  * A self configuring TestContext which sets itself up it implements TestRule. With a @Rule annotation, an instance of
- * this Class as a public member in any org.apache.usergrid.test class or abstract org.apache.usergrid.test class will auto svcSetup itself before each org.apache.usergrid.test.
+ * this Class as a public member in any test class or abstract test class will auto svcSetup itself before each test.
  */
 public class TestContextSetup extends TestContext implements TestRule {
 

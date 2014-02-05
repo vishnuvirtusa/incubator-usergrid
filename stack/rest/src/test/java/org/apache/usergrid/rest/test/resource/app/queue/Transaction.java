@@ -19,8 +19,10 @@ package org.apache.usergrid.rest.test.resource.app.queue;
 import org.apache.usergrid.rest.test.resource.CollectionResource;
 import org.apache.usergrid.rest.test.resource.NamedResource;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import com.sun.jersey.api.client.WebResource;
+import java.util.HashMap;
 
 
 /**
@@ -30,6 +32,7 @@ import com.sun.jersey.api.client.WebResource;
  */
 public class Transaction extends CollectionResource {
 
+    protected static ObjectMapper mapper = new ObjectMapper();
     private String clientId;
     private long timeout = 0;
 
@@ -51,7 +54,7 @@ public class Transaction extends CollectionResource {
 
     /** post to the entity set */
     public JsonNode delete() {
-        return jsonMedia( withParams( withToken( resource() ) ) ).delete( JsonNode.class );
+        return mapper.valueToTree(jsonMedia( withParams( withToken( resource() ) ) ).delete( HashMap.class ));
     }
 
 

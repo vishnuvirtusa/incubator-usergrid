@@ -37,7 +37,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Test
     public void inOrder() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -48,7 +48,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
         IncrementHandler handler = new IncrementHandler( count );
         // now consume and make sure we get each message. We'll use the default for
         // this
-        // org.apache.usergrid.test first
+        // test first
         testMessages( queue, handler, new NoLastCommand() );
 
         handler.assertResults();
@@ -57,7 +57,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
 
     @Test
     public void inOrderPaging() {
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -71,19 +71,19 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
 
         // now consume and make sure we get each message. We'll use the default for
         // this
-        // org.apache.usergrid.test first
+        // test first
         testMessages( queue, handler, new NoLastCommand() );
 
         handler.assertResults();
     }
 
 
-    /** Read all messages with the client, then re-issue the reads from the start position to org.apache.usergrid.test we do this
+    /** Read all messages with the client, then re-issue the reads from the start position to test we do this
      * properly */
     @Test
     public void startPaging() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -94,7 +94,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
         queue = queue.withLimit( 15 );
 
         // now consume and make sure we get each message. We'll use the default for
-        // this org.apache.usergrid.test first
+        // this test first
         IncrementHandler handler = new IncrementHandler( count );
 
         testMessages( queue, handler, new NoLastCommand() );
@@ -102,7 +102,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
 
         queue = queue.withPosition( QueuePosition.START.name() ).withLast( null );
 
-        // now org.apache.usergrid.test it again, we should get same results when we explicitly read
+        // now test it again, we should get same results when we explicitly read
         // from start and pass back the last
         handler = new IncrementHandler( count );
         testMessages( queue, handler );
@@ -113,7 +113,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Test
     public void reverseOrderPaging() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -141,7 +141,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Test
     public void delete() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         try {
             queue.delete();
@@ -160,7 +160,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Ignore("Currently unsupported.  Needs fixed with iterators")
     public void filterForward() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -176,12 +176,12 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
         queue = queue.withLimit( 1 ).withPosition( QueuePosition.START.name() )
                      .withFilters( "name = 'todd'", "id >= 10", "id <= 20" ).withLast( null );
 
-        // org.apache.usergrid.test it the first time, we should match
+        // test it the first time, we should match
         ForwardMatchHandler handler = new ForwardMatchHandler( 10, 10 );
         testMessages( queue, handler );
         handler.assertResults();
 
-        // org.apache.usergrid.test it again, shoudl still match
+        // test it again, shoudl still match
         handler = new ForwardMatchHandler( 10, 10 );
         testMessages( queue, handler );
         handler.assertResults();
@@ -193,7 +193,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Ignore("Currently unsupported.  Needs fixed with iterators")
     public void filterReverse() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -204,12 +204,12 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
         queue = queue.withLimit( 1 ).withPosition( QueuePosition.END.name() )
                      .withFilters( "name = 'todd'", "id >= 20", "id <= 30" ).withLast( null );
 
-        // org.apache.usergrid.test it the first time, we should match
+        // test it the first time, we should match
         ReverseMatchHandler handler = new ReverseMatchHandler( 30, 10 );
         testMessages( queue, handler );
         handler.assertResults();
 
-        // org.apache.usergrid.test it again, shoudl still match
+        // test it again, shoudl still match
         handler = new ReverseMatchHandler( 10, 10 );
         testMessages( queue, handler );
         handler.assertResults();
@@ -219,7 +219,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Test
     public void topic() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         final int count = 30;
 
@@ -229,7 +229,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
 
         // now consume and make sure we get each message. We'll use the default for
         // this
-        // org.apache.usergrid.test first
+        // test first
 
         IncrementHandler handler = new IncrementHandler( count );
         testMessages( queue, handler, new ClientId( "client1" ), new NoLastCommand() );
@@ -242,7 +242,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
         // change back to client 1, and we shouldn't have anything
         // now consume and make sure we get each message. We'll use the default for
         // this
-        // org.apache.usergrid.test first
+        // test first
         queue = queue.withClientId( "client1" );
 
         JsonNode node = queue.getNextEntry();
@@ -254,7 +254,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Test
     public void subscribe() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         queue.subscribers().subscribe( "testsub1" );
         queue.subscribers().subscribe( "testsub2" );
@@ -294,7 +294,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
     @Test
     public void unsubscribe() {
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         queue.subscribers().subscribe( "testsub1" );
         queue.subscribers().subscribe( "testsub2" );
@@ -327,7 +327,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
         handler.assertResults();
 
         // now unsubscribe the second queue
-        queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        queue = context.application().queues().queue( "test" );
 
         queue.subscribers().unsubscribe( "testsub1" );
 
@@ -370,7 +370,7 @@ public class QueueResourceShortIT extends AbstractQueueResourceIT {
 
         ExecutorService executor = Executors.newFixedThreadPool( consumerSize );
 
-        Queue queue = context.application().queues().queue( "org.apache.usergrid.test" );
+        Queue queue = context.application().queues().queue( "test" );
 
         // post the messages in batch
         for ( int i = 0; i < count / batchsize; i++ ) {

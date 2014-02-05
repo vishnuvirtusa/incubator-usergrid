@@ -316,7 +316,7 @@ public class OpQuery extends OpCrud {
 
 
     private OpReply handleUnauthorizedQuery( MessageEvent e ) {
-        // { "$err" : "unauthorized db:org.apache.usergrid.test lock type:-1 client:127.0.0.1" ,
+        // { "$err" : "unauthorized db:test lock type:-1 client:127.0.0.1" ,
         // "code" : 10057}
         OpReply reply = new OpReply( this );
         reply.addDocument( map( entry( "$err",

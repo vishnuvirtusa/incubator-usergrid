@@ -66,7 +66,7 @@ public class ManagementServiceIT {
     @BeforeClass
     public static void setup() throws Exception {
         LOG.info( "in setup" );
-        adminUser = setup.getMgmtSvc().createAdminUser( "edanuff", "Ed Anuff", "ed@anuff.com", "org.apache.usergrid.test", false, false );
+        adminUser = setup.getMgmtSvc().createAdminUser( "edanuff", "Ed Anuff", "ed@anuff.com", "test", false, false );
         organization = setup.getMgmtSvc().createOrganization( "ed-organization", adminUser, true );
         applicationId = setup.getMgmtSvc().createApplication( organization.getUuid(), "ed-application" ).getId();
     }
@@ -136,8 +136,8 @@ public class ManagementServiceIT {
 
         UUID uuid = UUIDUtils.newTimeUUID();
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        properties.put( "username", "org.apache.usergrid.test" + uuid );
-        properties.put( "email", String.format( "org.apache.usergrid.test%s@anuff.com", uuid ) );
+        properties.put( "username", "test" + uuid );
+        properties.put( "email", String.format( "test%s@anuff.com", uuid ) );
 
         EntityManager em = setup.getEmf().getEntityManager( applicationId );
 
@@ -206,8 +206,8 @@ public class ManagementServiceIT {
 
         UUID uuid = UUIDUtils.newTimeUUID();
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
-        properties.put( "username", "org.apache.usergrid.test" + uuid );
-        properties.put( "email", String.format( "org.apache.usergrid.test%s@anuff.com", uuid ) );
+        properties.put( "username", "test" + uuid );
+        properties.put( "email", String.format( "test%s@anuff.com", uuid ) );
 
         EntityManager em = setup.getEmf().getEntityManager( MANAGEMENT_APPLICATION_ID );
 
@@ -439,7 +439,7 @@ public class ManagementServiceIT {
     public void authenticateAdmin() throws Exception {
 
         String username = "tnine";
-        String password = "org.apache.usergrid.test";
+        String password = "test";
 
         UserInfo adminUser = setup.getMgmtSvc()
                                   .createAdminUser( username, "Todd Nine", UUID.randomUUID() + "@apigee.com", password,
@@ -463,7 +463,7 @@ public class ManagementServiceIT {
     @Test
     public void testAdminPasswordChangeShaType() throws Exception {
         String username = "testAdminPasswordChangeShaType";
-        String password = "org.apache.usergrid.test";
+        String password = "test";
 
 
         User user = new User();
@@ -499,7 +499,7 @@ public class ManagementServiceIT {
 
         assertEquals( userId, authedUser.getUuid() );
 
-        //org.apache.usergrid.test we can change the password
+        //test we can change the password
         String newPassword = "test2";
 
         setup.getMgmtSvc().setAppUserPassword( MANAGEMENT_APPLICATION_ID, userId, password, newPassword );
@@ -516,7 +516,7 @@ public class ManagementServiceIT {
     @Test
     public void testAdminPasswordChangeMd5ShaType() throws Exception {
         String username = "testAdminPasswordChangeMd5ShaType";
-        String password = "org.apache.usergrid.test";
+        String password = "test";
 
 
         User user = new User();
@@ -561,7 +561,7 @@ public class ManagementServiceIT {
 
         assertEquals( userId, authedUser.getUuid() );
 
-        //org.apache.usergrid.test we can change the password
+        //test we can change the password
         String newPassword = "test2";
 
         setup.getMgmtSvc().setAppUserPassword( MANAGEMENT_APPLICATION_ID, userId, password, newPassword );
@@ -578,7 +578,7 @@ public class ManagementServiceIT {
     public void authenticateUser() throws Exception {
 
         String username = "tnine";
-        String password = "org.apache.usergrid.test";
+        String password = "test";
         String orgName = "autneticateUser";
         String appName = "authenticateUser";
 
@@ -603,7 +603,7 @@ public class ManagementServiceIT {
 
         assertEquals( userId, authedUser.getUuid() );
 
-        //org.apache.usergrid.test we can change the password
+        //test we can change the password
         String newPassword = "test2";
 
         setup.getMgmtSvc().setAppUserPassword( appId, userId, password, newPassword );
@@ -617,7 +617,7 @@ public class ManagementServiceIT {
     @Test
     public void testAppUserPasswordChangeShaType() throws Exception {
         String username = "tnine";
-        String password = "org.apache.usergrid.test";
+        String password = "test";
         String orgName = "testAppUserPasswordChangeShaType";
         String appName = "testAppUserPasswordChangeShaType";
 
@@ -655,7 +655,7 @@ public class ManagementServiceIT {
 
         assertEquals( userId, authedUser.getUuid() );
 
-        //org.apache.usergrid.test we can change the password
+        //test we can change the password
         String newPassword = "test2";
 
         setup.getMgmtSvc().setAppUserPassword( appId, userId, password, newPassword );
@@ -671,7 +671,7 @@ public class ManagementServiceIT {
     @Test
     public void testAppUserPasswordChangeMd5ShaType() throws Exception {
         String username = "tnine";
-        String password = "org.apache.usergrid.test";
+        String password = "test";
         String orgName = "testAppUserPasswordChangeMd5ShaType";
         String appName = "testAppUserPasswordChangeMd5ShaType";
 
@@ -716,7 +716,7 @@ public class ManagementServiceIT {
 
         assertEquals( userId, authedUser.getUuid() );
 
-        //org.apache.usergrid.test we can change the password
+        //test we can change the password
         String newPassword = "test2";
 
         setup.getMgmtSvc().setAppUserPassword( appId, userId, password, newPassword );

@@ -129,7 +129,7 @@ public class ServiceInvocationIT extends AbstractServiceIT {
 
         Map<String, Object> properties = new LinkedHashMap<String, Object>();
         properties.put( "username", "test_user_1" );
-        properties.put( "email", "user1@org.apache.usergrid.test.com" );
+        properties.put( "email", "user1@test.com" );
         batch.add( properties );
 
         properties = new LinkedHashMap<String, Object>();

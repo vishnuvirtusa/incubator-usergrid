@@ -44,7 +44,7 @@ public class Test extends ToolBase {
 
     @Override
     public void runTool( CommandLine line ) throws Exception {
-        logger.info( "Starting org.apache.usergrid.test..." );
+        logger.info( "Starting test..." );
         boolean startSpring = line.hasOption( "spring" );
         if ( startSpring ) {
             startSpring();

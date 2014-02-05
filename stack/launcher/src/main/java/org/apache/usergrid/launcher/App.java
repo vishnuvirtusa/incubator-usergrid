@@ -282,7 +282,7 @@ public class App {
         prefs = Preferences.userNodeForPackage( org.apache.usergrid.launcher.App.class );
         initializeDatabaseOnStart = prefs.getBoolean( "initializeDatabaseOnStart", true );
         startDatabaseWithServer = prefs.getBoolean( "startDatabaseWithServer", true );
-        adminUserEmail = prefs.get( "adminUserEmail", "org.apache.usergrid.test@usergrid.com" );
+        adminUserEmail = prefs.get( "adminUserEmail", "test@usergrid.com" );
         autoLogin = prefs.getBoolean( "autoLogin", true );
     }
 }

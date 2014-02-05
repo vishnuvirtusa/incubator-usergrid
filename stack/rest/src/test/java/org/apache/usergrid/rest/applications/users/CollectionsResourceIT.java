@@ -54,9 +54,9 @@ public class CollectionsResourceIT extends AbstractRestIT {
         Map<String, String> payload = hashMap( "name", "Austin" ).map( "state", "TX" );
         JsonNode node = null;
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/cities" )
+            node = mapper.valueToTree(resource().path( "/test-organization/test-organization/test-app/cities" )
                     .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+                    .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
         }
         catch ( UniformInterfaceException e ) {
             assertEquals( "Should receive a 400 Not Found", 400, e.getResponse().getStatus() );
@@ -69,9 +69,9 @@ public class CollectionsResourceIT extends AbstractRestIT {
         Map<String, String> payload = new HashMap<String, String>();
 
         JsonNode node =
-                resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/cities" ).queryParam( "access_token", access_token )
+                mapper.valueToTree(resource().path( "/test-organization/test-app/cities" ).queryParam( "access_token", access_token )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .post( JsonNode.class, payload );
+                        .post( HashMap.class, payload ));
         assertNull( getEntity( node, 0 ) );
         assertNull( node.get( "count" ) );
     }
@@ -96,10 +96,10 @@ public class CollectionsResourceIT extends AbstractRestIT {
 
         data.put( "permission", "get,post,put,delete:/users/sumeet.agarwal@usergrid.com/**" );
 
-        String path = "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/sumeet.agarwal@usergrid.com/permissions";
+        String path = "/test-organization/test-app/users/sumeet.agarwal@usergrid.com/permissions";
         JsonNode posted =
-                resource().path( path ).queryParam( "access_token", token ).accept( MediaType.APPLICATION_JSON )
-                        .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, data );
+                mapper.valueToTree(resource().path( path ).queryParam( "access_token", token ).accept( MediaType.APPLICATION_JSON )
+                        .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, data ));
 
 
         //now post data
@@ -111,14 +111,14 @@ public class CollectionsResourceIT extends AbstractRestIT {
         data.put( "mobile", "122" );
 
 
-        posted = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/nestprofiles" ).queryParam( "access_token", token )
+        posted = mapper.valueToTree(mapper.valueToTree(resource().path( "/test-organization/test-app/nestprofiles" ).queryParam( "access_token", token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, data );
+                .post( HashMap.class, data )));
 
         JsonNode response =
-                resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/nestprofiles" ).queryParam( "access_token", token )
+                mapper.valueToTree(resource().path( "/test-organization/test-app/nestprofiles" ).queryParam( "access_token", token )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .get( JsonNode.class );
+                        .get( HashMap.class ));
 
         assertNotNull( getEntity( response, 0 ) );
         assertNotNull( response.get( "count" ) );
@@ -129,9 +129,9 @@ public class CollectionsResourceIT extends AbstractRestIT {
     public void stringWithSpaces() {
         Map<String, String> payload = hashMap( "summaryOverview", "My Summary" ).map( "caltype", "personal" );
 
-        JsonNode node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/calendarlists" )
+        JsonNode node = mapper.valueToTree(resource().path( "/test-organization/test-app/calendarlists" )
                 .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+                .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
 
         UUID id = getEntityId( node, 0 );
@@ -141,9 +141,9 @@ public class CollectionsResourceIT extends AbstractRestIT {
 
         payload = hashMap( "summaryOverview", "Your Summary" ).map( "caltype", "personal" );
 
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/calendarlists" ).queryParam( "access_token", access_token )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/calendarlists" ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+                .post( HashMap.class, payload ));
 
 
         //query for the first entity
@@ -151,9 +151,9 @@ public class CollectionsResourceIT extends AbstractRestIT {
         String query = "summaryOverview = 'My Summary'";
 
 
-        JsonNode queryResponse = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/calendarlists" )
+        JsonNode queryResponse = mapper.valueToTree(resource().path( "/test-organization/test-app/calendarlists" )
                 .queryParam( "access_token", access_token ).queryParam( "ql", query )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
 
 
         UUID returnedId = getEntityId( queryResponse, 0 );
@@ -176,9 +176,9 @@ public class CollectionsResourceIT extends AbstractRestIT {
             // create an "app_user" object with name fred
             Map<String, String> payload = hashMap( "type", "app_user" ).map( "name", "fred" );
 
-            JsonNode node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/app_users" )
+            JsonNode node = mapper.valueToTree(resource().path( "/test-organization/test-app/app_users" )
                     .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).post( JsonNode.class, payload );
+                    .type( MediaType.APPLICATION_JSON_TYPE ).post( HashMap.class, payload ));
 
             String uuidString = node.get( "entities" ).get( 0 ).get( "uuid" ).asText();
             entityId = UUIDUtils.tryGetUUID( uuidString );
@@ -187,7 +187,7 @@ public class CollectionsResourceIT extends AbstractRestIT {
         {
             // check REST API response for duplicate name property
             // have to look at raw response data, Jackson will remove dups
-            String s = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/app_users/fred" )
+            String s = resource().path( "/test-organization/test-app/app_users/fred" )
                     .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
                     .type( MediaType.APPLICATION_JSON_TYPE ).get( String.class );
 

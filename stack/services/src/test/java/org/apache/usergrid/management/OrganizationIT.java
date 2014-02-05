@@ -54,7 +54,7 @@ public class OrganizationIT {
     @Test
     public void testCreateOrganization() throws Exception {
         UserInfo user =
-                setup.getMgmtSvc().createAdminUser( "edanuff2", "Ed Anuff", "ed@anuff.com2", "org.apache.usergrid.test", false, false );
+                setup.getMgmtSvc().createAdminUser( "edanuff2", "Ed Anuff", "ed@anuff.com2", "test", false, false );
         assertNotNull( user );
 
         OrganizationInfo organization = setup.getMgmtSvc().createOrganization( "OrganizationIT", user, false );
@@ -76,12 +76,12 @@ public class OrganizationIT {
         assertNotNull( organization2 );
         assertEquals( "wrong organization name", "OrganizationIT", organization2.getName() );
 
-        boolean verified = setup.getMgmtSvc().verifyAdminUserPassword( user.getUuid(), "org.apache.usergrid.test" );
+        boolean verified = setup.getMgmtSvc().verifyAdminUserPassword( user.getUuid(), "test" );
         assertTrue( verified );
 
         setup.getMgmtSvc().activateOrganization( organization2 );
 
-        UserInfo u = setup.getMgmtSvc().verifyAdminUserPasswordCredentials( user.getUuid().toString(), "org.apache.usergrid.test" );
+        UserInfo u = setup.getMgmtSvc().verifyAdminUserPasswordCredentials( user.getUuid().toString(), "test" );
         assertNotNull( u );
 
         String token = setup.getMgmtSvc().getAccessTokenForAdminUser( user.getUuid(), 0 );
@@ -93,7 +93,7 @@ public class OrganizationIT {
         assertEquals( user.getUuid(), principal.getUuid() );
 
         UserInfo new_user = setup.getMgmtSvc()
-                                 .createAdminUser( "org.apache.usergrid.test-user-133", "Test User", "org.apache.usergrid.test-user-133@mockserver.com",
+                                 .createAdminUser( "test-user-133", "Test User", "test-user-133@mockserver.com",
                                          "testpassword", true, true );
         assertNotNull( new_user );
 
@@ -186,7 +186,7 @@ public class OrganizationIT {
             // ok
         }
 
-        // org.apache.usergrid.test history size w/ user belonging to 2 orgs
+        // test history size w/ user belonging to 2 orgs
         OrganizationInfo organization2 = setup.getMgmtSvc().createOrganization( "OrganizationTest3", user, false );
         assertNotNull( organization );
 

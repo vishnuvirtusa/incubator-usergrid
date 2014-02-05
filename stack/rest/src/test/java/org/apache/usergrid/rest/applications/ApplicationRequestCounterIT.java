@@ -29,6 +29,7 @@ import org.apache.usergrid.rest.AbstractRestIT;
 import org.apache.usergrid.services.ServiceManager;
 import org.apache.usergrid.utils.UUIDUtils;
 import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,8 @@ public class ApplicationRequestCounterIT extends AbstractRestIT {
     @Test
     public void applicationrequestInternalCounters() throws Exception {
         // Get application id
-        JsonNode node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app" ).queryParam( "access_token", access_token )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+        JsonNode node = mapper.valueToTree(resource().path( "/test-organization/test-app" ).queryParam( "access_token", access_token )
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
 
         assertNotNull( node.get( "entities" ) );
 
@@ -67,9 +68,9 @@ public class ApplicationRequestCounterIT extends AbstractRestIT {
         int beforeCall = getCounter( em, ServiceManager.APPLICATION_REQUESTS_PER.concat( "get" ) );
 
         // call
-        node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/counters" ).queryParam( "resolution", "all" )
+        node = mapper.valueToTree(resource().path( "/test-organization/test-app/counters" ).queryParam( "resolution", "all" )
                 .queryParam( "counter", "application.requests" ).queryParam( "access_token", adminToken() )
-                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
 
         assertNotNull( node.get( "counters" ) );
 

@@ -242,7 +242,7 @@ public class Server implements org.springframework.context.ApplicationContextAwa
                 "/WEB-INF/jsp/org.apache.usergrid/rest/TestResource/error.jsp" );
 
         mapServlet( "jsp.WEB_002dINF.jsp.org.apache.usergrid.rest.TestResource.test_jsp",
-                "/WEB-INF/jsp/org.apache.usergrid/rest/TestResource/org.apache.usergrid.test.jsp" );
+                "/WEB-INF/jsp/org.apache.usergrid/rest/TestResource/test.jsp" );
 
         mapServlet( "jsp.WEB_002dINF.jsp.org.apache.usergrid.rest.management.users.UsersResource.error_jsp",
                 "/WEB-INF/jsp/org.apache.usergrid/rest/management/users/UsersResource/error.jsp" );

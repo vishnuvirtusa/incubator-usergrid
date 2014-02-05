@@ -80,15 +80,15 @@ import static org.junit.Assert.assertTrue;
 
 
 /**
- * This org.apache.usergrid.test cannot be run concurrently because it changes the management service properties that control how the
+ * This test cannot be run concurrently because it changes the management service properties that control how the
  * activation workflow is handled and it uses a shared global mock Mailbox to process emails.
  * <p/>
- * Hence there can be race conditions between org.apache.usergrid.test methods in this class.
+ * Hence there can be race conditions between test methods in this class.
  */
 public class EmailFlowIT {
     private static final Logger LOG = LoggerFactory.getLogger( EmailFlowIT.class );
-    private static final String ORGANIZATION_NAME = "email-org.apache.usergrid.test-org-1";
-    public static final String ORGANIZATION_NAME_2 = "email-org.apache.usergrid.test-org-2";
+    private static final String ORGANIZATION_NAME = "email-test-org-1";
+    public static final String ORGANIZATION_NAME_2 = "email-test-org-2";
 
     static CassandraResource cassandraResource = CassandraResource.newWithAvailablePorts();
 
@@ -111,19 +111,19 @@ public class EmailFlowIT {
         setup.set( PROPERTIES_NOTIFY_ADMIN_OF_ACTIVATION, "true" );
 
         OrganizationOwnerInfo org_owner =
-                createOwnerAndOrganization( ORGANIZATION_NAME, "org.apache.usergrid.test-user-1", "Test User", "org.apache.usergrid.test-user-1@mockserver.com",
+                createOwnerAndOrganization( ORGANIZATION_NAME, "test-user-1", "Test User", "test-user-1@mockserver.com",
                         "testpassword", false, false );
         assertNotNull( org_owner );
 
-        List<Message> inbox = Mailbox.get( "org.apache.usergrid.test-user-1@mockserver.com" );
+        List<Message> inbox = Mailbox.get( "test-user-1@mockserver.com" );
 
         assertFalse( inbox.isEmpty() );
 
-        MockImapClient client = new MockImapClient( "mockserver.com", "org.apache.usergrid.test-user-1", "somepassword" );
+        MockImapClient client = new MockImapClient( "mockserver.com", "test-user-1", "somepassword" );
         client.processMail();
 
         Message confirmation = inbox.get( 0 );
-        assertEquals( "User Account Confirmation: org.apache.usergrid.test-user-1@mockserver.com", confirmation.getSubject() );
+        assertEquals( "User Account Confirmation: test-user-1@mockserver.com", confirmation.getSubject() );
 
         String token = getTokenFromMessage( confirmation );
         LOG.info( token );
@@ -134,7 +134,7 @@ public class EmailFlowIT {
         Message activation = inbox.get( 1 );
         assertEquals( "User Account Activated", activation.getSubject() );
 
-        client = new MockImapClient( "mockserver.com", "org.apache.usergrid.test-user-1", "somepassword" );
+        client = new MockImapClient( "mockserver.com", "test-user-1", "somepassword" );
         client.processMail();
     }
 
@@ -147,16 +147,16 @@ public class EmailFlowIT {
         setup.set( PROPERTIES_ADMIN_USERS_REQUIRE_CONFIRMATION, "true" );
         setup.set( PROPERTIES_SYSADMIN_EMAIL, "sysadmin-2@mockserver.com" );
 
-        OrganizationOwnerInfo org_owner = createOwnerAndOrganization( ORGANIZATION_NAME_2, "org.apache.usergrid.test-user-2", "Test User",
-                "org.apache.usergrid.test-user-2@mockserver.com", "testpassword", false, false );
+        OrganizationOwnerInfo org_owner = createOwnerAndOrganization( ORGANIZATION_NAME_2, "test-user-2", "Test User",
+                "test-user-2@mockserver.com", "testpassword", false, false );
         assertNotNull( org_owner );
 
-        List<Message> user_inbox = Mailbox.get( "org.apache.usergrid.test-user-2@mockserver.com" );
+        List<Message> user_inbox = Mailbox.get( "test-user-2@mockserver.com" );
 
         assertFalse( user_inbox.isEmpty() );
 
         Message confirmation = user_inbox.get( 0 );
-        assertEquals( "User Account Confirmation: org.apache.usergrid.test-user-2@mockserver.com", confirmation.getSubject() );
+        assertEquals( "User Account Confirmation: test-user-2@mockserver.com", confirmation.getSubject() );
 
         String token = getTokenFromMessage( confirmation );
         LOG.info( token );
@@ -172,7 +172,7 @@ public class EmailFlowIT {
         assertFalse( sysadmin_inbox.isEmpty() );
 
         Message activation = sysadmin_inbox.get( 0 );
-        assertEquals( "Request For Admin User Account Activation org.apache.usergrid.test-user-2@mockserver.com", activation.getSubject() );
+        assertEquals( "Request For Admin User Account Activation test-user-2@mockserver.com", activation.getSubject() );
 
         token = getTokenFromMessage( activation );
         LOG.info( token );
@@ -183,7 +183,7 @@ public class EmailFlowIT {
         Message activated = user_inbox.get( 2 );
         assertEquals( "User Account Activated", activated.getSubject() );
 
-        MockImapClient client = new MockImapClient( "mockserver.com", "org.apache.usergrid.test-user-2", "somepassword" );
+        MockImapClient client = new MockImapClient( "mockserver.com", "test-user-2", "somepassword" );
         client.processMail();
     }
 
@@ -230,7 +230,7 @@ public class EmailFlowIT {
         String orgName = this.getClass().getName() + "1";
         String appName = name.getMethodName();
         String userName = "Test User";
-        String email = "org.apache.usergrid.test-user-4@mockserver.com";
+        String email = "test-user-4@mockserver.com";
         String passwd = "testpassword";
         OrganizationOwnerInfo orgOwner;
 
@@ -239,9 +239,9 @@ public class EmailFlowIT {
 
         ApplicationInfo app = setup.getMgmtSvc().createApplication( orgOwner.getOrganization().getUuid(), appName );
         enableAdminApproval( app.getId() );
-        User user = setupAppUser( app.getId(), "testAppUserMailUrl", "testAppUserMailUrl@org.apache.usergrid.test.com", false );
+        User user = setupAppUser( app.getId(), "testAppUserMailUrl", "testAppUserMailUrl@test.com", false );
 
-        String subject = "Request For User Account Activation testAppUserMailUrl@org.apache.usergrid.test.com";
+        String subject = "Request For User Account Activation testAppUserMailUrl@test.com";
         String activation_url = String.format( setup.get( PROPERTIES_USER_ACTIVATION_URL ), orgName, appName,
                 user.getUuid().toString() );
 
@@ -250,7 +250,7 @@ public class EmailFlowIT {
 
         List<Message> inbox = Mailbox.get( email );
         assertFalse( inbox.isEmpty() );
-        MockImapClient client = new MockImapClient( "usergrid.com", "org.apache.usergrid.test", "somepassword" );
+        MockImapClient client = new MockImapClient( "usergrid.com", "test", "somepassword" );
         client.processMail();
 
         // subject ok
@@ -276,9 +276,9 @@ public class EmailFlowIT {
         // reset_pwd
         setup.getMgmtSvc().startAppUserPasswordResetFlow( app.getId(), user );
 
-        inbox = Mailbox.get( "testAppUserMailUrl@org.apache.usergrid.test.com" );
+        inbox = Mailbox.get( "testAppUserMailUrl@test.com" );
         assertFalse( inbox.isEmpty() );
-        client = new MockImapClient( "org.apache.usergrid.test.com", "testAppUserMailUrl", "somepassword" );
+        client = new MockImapClient( "test.com", "testAppUserMailUrl", "somepassword" );
         client.processMail();
 
         // subject ok
@@ -307,7 +307,7 @@ public class EmailFlowIT {
         String orgName = this.getClass().getName();
         String appName = name.getMethodName();
         String userName = "Test User";
-        String email = "org.apache.usergrid.test-user-45@mockserver.com";
+        String email = "test-user-45@mockserver.com";
         String passwd = "testpassword";
         OrganizationOwnerInfo orgOwner;
 
@@ -318,18 +318,18 @@ public class EmailFlowIT {
         assertNotNull( app );
         enableEmailConfirmation( app.getId() );
         enableAdminApproval( app.getId() );
-        User user = setupAppUser( app.getId(), "testAppUserConfMail", "testAppUserConfMail@org.apache.usergrid.test.com", true );
+        User user = setupAppUser( app.getId(), "testAppUserConfMail", "testAppUserConfMail@test.com", true );
 
-        String subject = "User Account Confirmation: testAppUserConfMail@org.apache.usergrid.test.com";
+        String subject = "User Account Confirmation: testAppUserConfMail@test.com";
         String urlProp = setup.get( PROPERTIES_USER_CONFIRMATION_URL );
         String confirmation_url = String.format( urlProp, orgName, appName, user.getUuid().toString() );
 
         // request confirmation
         setup.getMgmtSvc().startAppUserActivationFlow( app.getId(), user );
 
-        List<Message> inbox = Mailbox.get( "testAppUserConfMail@org.apache.usergrid.test.com" );
+        List<Message> inbox = Mailbox.get( "testAppUserConfMail@test.com" );
         assertFalse( inbox.isEmpty() );
-        MockImapClient client = new MockImapClient( "org.apache.usergrid.test.com", "testAppUserConfMail", "somepassword" );
+        MockImapClient client = new MockImapClient( "test.com", "testAppUserConfMail", "somepassword" );
         client.processMail();
 
         // subject ok
@@ -379,12 +379,12 @@ public class EmailFlowIT {
 
         if ( containsSubstitution ) {
             Map<String, String> valuesMap = new HashMap<String, String>();
-            valuesMap.put( "reset_url", "org.apache.usergrid.test-url" );
-            valuesMap.put( "organization_name", "org.apache.usergrid.test-org" );
-            valuesMap.put( "activation_url", "org.apache.usergrid.test-url" );
-            valuesMap.put( "confirmation_url", "org.apache.usergrid.test-url" );
-            valuesMap.put( "user_email", "org.apache.usergrid.test-email" );
-            valuesMap.put( "pin", "org.apache.usergrid.test-pin" );
+            valuesMap.put( "reset_url", "test-url" );
+            valuesMap.put( "organization_name", "test-org" );
+            valuesMap.put( "activation_url", "test-url" );
+            valuesMap.put( "confirmation_url", "test-url" );
+            valuesMap.put( "user_email", "test-email" );
+            valuesMap.put( "pin", "test-pin" );
             StrSubstitutor sub = new StrSubstitutor( valuesMap );
             String resolvedString = sub.replace( propertyValue );
             assertNotSame( propertyValue, resolvedString );

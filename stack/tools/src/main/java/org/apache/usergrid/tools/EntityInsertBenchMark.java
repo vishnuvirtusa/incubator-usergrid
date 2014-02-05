@@ -164,24 +164,24 @@ public class EntityInsertBenchMark extends ToolBase {
                 Mutator<ByteBuffer> m = createMutator( ko, be );
 
                 DynamicEntity dynEntity = new DynamicEntity();
-                dynEntity.setType( "org.apache.usergrid.test" );
+                dynEntity.setType( "test" );
                 dynEntity.setUuid( UUIDUtils.newTimeUUID() );
 
                 String value = new StringBuilder().append( workerNumber ).append( "-" ).append( i ).toString();
 
 
                 String bucketId =
-                        indexBucketLocator.getBucket( appId, IndexType.COLLECTION, dynEntity.getUuid(), "org.apache.usergrid.test" );
+                        indexBucketLocator.getBucket( appId, IndexType.COLLECTION, dynEntity.getUuid(), "test" );
 
-                Object index_name = key( appId, "tests", "org.apache.usergrid.test", bucketId );
+                Object index_name = key( appId, "tests", "test", bucketId );
 
-                IndexEntry entry = new IndexEntry( dynEntity.getUuid(), "org.apache.usergrid.test", value, UUIDUtils.newTimeUUID() );
+                IndexEntry entry = new IndexEntry( dynEntity.getUuid(), "test", value, UUIDUtils.newTimeUUID() );
 
                 addInsertToMutator( m, ENTITY_INDEX, index_name, entry.getIndexComposite(), null,
                         System.currentTimeMillis() );
 
                 UniqueIndexer indexer = new UniqueIndexer( m );
-                indexer.writeIndex( appId, "tests", dynEntity.getUuid(), "org.apache.usergrid.test", value );
+                indexer.writeIndex( appId, "tests", dynEntity.getUuid(), "test", value );
                 // write this to the direct collection index
 
                 m.execute();

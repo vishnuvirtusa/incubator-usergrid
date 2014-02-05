@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.UniformInterfaceException;
+import java.util.HashMap;
 import static org.apache.usergrid.utils.MapUtils.hashMap;
 
 import static org.junit.Assert.assertNull;
@@ -51,37 +52,37 @@ public class ConnectionResourceTest extends AbstractRestIT {
         Map<String, Object> objectOfDesire = new LinkedHashMap<String, Object>();
         objectOfDesire.put( "codingmunchies", "doritoes" );
 
-        resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).queryParam( "access_token", access_token )
+        resource().path( "/test-organization/test-app/users" ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+                .post( HashMap.class, payload );
 
         payload.put( "username", "scott" );
 
 
-        resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users" ).queryParam( "access_token", access_token )
+        resource().path( "/test-organization/test-app/users" ).queryParam( "access_token", access_token )
                 .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                .post( JsonNode.class, payload );
+                .post( HashMap.class, payload );
     /*finish setting up the two users */
 
 
-        ClientResponse toddWant = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/todd/likes/peeps" )
+        ClientResponse toddWant = resource().path( "/test-organization/test-app/users/todd/likes/peeps" )
                 .queryParam( "access_token", access_token ).accept( MediaType.TEXT_HTML )
                 .type( MediaType.APPLICATION_JSON_TYPE ).post( ClientResponse.class, objectOfDesire );
 
         assertEquals( 200, toddWant.getStatus() );
 
         JsonNode node =
-                resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/peeps" ).queryParam( "access_token", access_token )
+                mapper.valueToTree(resource().path( "/test-organization/test-app/peeps" ).queryParam( "access_token", access_token )
                         .accept( MediaType.APPLICATION_JSON ).type( MediaType.APPLICATION_JSON_TYPE )
-                        .get( JsonNode.class );
+                        .get( HashMap.class ));
 
         String uuid = node.get( "entities" ).get( 0 ).get( "uuid" ).asText();
 
 
         try {
-            node = resource().path( "/org.apache.usergrid.test-organization/org.apache.usergrid.test-app/users/scott/likes/" + uuid )
+            node = mapper.valueToTree(resource().path( "/test-organization/test-app/users/scott/likes/" + uuid )
                     .queryParam( "access_token", access_token ).accept( MediaType.APPLICATION_JSON )
-                    .type( MediaType.APPLICATION_JSON_TYPE ).get( JsonNode.class );
+                    .type( MediaType.APPLICATION_JSON_TYPE ).get( HashMap.class ));
             assert ( false );
         }
         catch ( UniformInterfaceException uie ) {
@@ -105,7 +106,7 @@ public class ConnectionResourceTest extends AbstractRestIT {
         things.entity( thing1Id ).connection( "likes" ).entity( thing2Id ).post();
 
 
-        //org.apache.usergrid.test we have the "likes" in our connection meta data response
+        //test we have the "likes" in our connection meta data response
 
         JsonNode response = things.entity( "thing1" ).get();
 
@@ -160,7 +161,7 @@ public class ConnectionResourceTest extends AbstractRestIT {
         things.entity( thing1Id ).connection( "likes" ).entity( thing2Id ).post();
 
 
-        //org.apache.usergrid.test we have the "likes" in our connection meta data response
+        //test we have the "likes" in our connection meta data response
 
         JsonNode response = things.entity( "thing1" ).get();
 
@@ -226,7 +227,7 @@ public class ConnectionResourceTest extends AbstractRestIT {
 
         JsonNode response = things.entity( "thing1" ).delete();
 
-        JsonNode node = things.entity ( "thing1" ).get();
+        JsonNode node = mapper.valueToTree(things.entity ( "thing1" ).get());
 
         assertNull(node);
 

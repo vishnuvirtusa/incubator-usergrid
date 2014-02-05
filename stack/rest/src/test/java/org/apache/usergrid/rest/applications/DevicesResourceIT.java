@@ -29,7 +29,7 @@ public class DevicesResourceIT extends AbstractRestIT {
 
         String path = "devices/" + uuid;
 
-        JsonNode response = appPath( path ).put( JsonNode.class, payload );
+        JsonNode response = mapper.valueToTree(appPath( path ).put( HashMap.class, payload ));
 
         // create
         JsonNode entity = getEntity( response, 0 );
@@ -38,12 +38,12 @@ public class DevicesResourceIT extends AbstractRestIT {
         assertEquals( uuid.toString(), newUuid );
 
         // delete
-        response = appPath( path ).delete( JsonNode.class );
+        response = mapper.valueToTree(appPath( path ).delete( HashMap.class ));
         assertNotNull( getEntity( response, 0 ) );
 
         // check deleted
         try {
-            response = appPath( path ).get( JsonNode.class );
+            response = mapper.valueToTree(appPath( path ).get( HashMap.class ));
             fail( "should get 404 error" );
         }
         catch ( UniformInterfaceException e ) {
@@ -51,12 +51,12 @@ public class DevicesResourceIT extends AbstractRestIT {
         }
 
         // create again
-        response = appPath( path ).put( JsonNode.class, payload );
+        response = mapper.valueToTree(appPath( path ).put( HashMap.class, payload ));
         entity = getEntity( response, 0 );
         assertNotNull( entity );
 
         // check existence
-        response = appPath( path ).get( JsonNode.class );
+        response = mapper.valueToTree(appPath( path ).get( HashMap.class ));
         assertNotNull( getEntity( response, 0 ) );
     }
 }
