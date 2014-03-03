@@ -1,0 +1,59 @@
+<assembly>
+    <id>assembly-server</id>
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+
+    <includeBaseDirectory>true</includeBaseDirectory>
+
+    <files>
+
+        <file>
+            <outputDirectory>.</outputDirectory> 
+            <source>./src/main/vagrant/Vagrantfile_cluster</source> 
+            <destName>Vagrantfile</destName> 
+        </file>
+
+        <file>
+            <outputDirectory>.</outputDirectory> 
+            <source>../rest/target/ROOT.war</source> 
+            <destName>ROOT.war</destName> 
+        </file>
+
+        <file>
+            <outputDirectory>.</outputDirectory> 
+            <source>../../portal/dist/appsvc-ui.2.0.34.zip</source> 
+            <destName>usergrid-portal.zip</destName> 
+        </file>
+
+    </files>
+
+    <fileSets>
+
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <directory>${project.basedir}/src/main/dist</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <directory>./src/main/groovy</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+
+        <fileSet>
+            <outputDirectory>.</outputDirectory>
+            <directory>./src/main/scripts</directory>
+            <includes>
+                <include>**</include>
+            </includes>
+        </fileSet>
+
+    </fileSets>
+
+</assembly>

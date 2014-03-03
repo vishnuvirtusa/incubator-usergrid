@@ -1,0 +1,40 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+
+    config.vm.box = "precise32"
+    config.vm.box_url = "http://files.vagrantup.com/precise32.box"
+
+    config.vm.define :r1 do |api1|
+        api1.vm.host_name = "api1"
+        api1.vm.network "private_network", ip: "10.1.1.160"
+        api1.vm.provision :shell, 
+            inline: "./bootstrap_api.sh \"10.1.1.160\" \"10.1.1.161,10.1.1.162,10.1.1.163\" 2" 
+    end
+
+    config.vm.define :d1 do |db1|
+        db1.vm.host_name = "db1"
+        db1.vm.network "private_network", ip: "10.1.1.161"
+        db1.vm.provision :shell, 
+            inline: "./bootstrap_db.sh \"10.1.1.161\" \"10.1.1.161,10.1.1.162,10.1.1.163\"" 
+    end
+ 
+    config.vm.define :d2 do |db2|
+        db2.vm.host_name = "db2"
+        db2.vm.network "private_network", ip: "10.1.1.162"
+        db2.vm.provision :shell,
+            inline: "./bootstrap_db.sh \"10.1.1.162\" \"10.1.1.161,10.1.1.162,10.1.1.163\"" 
+   end
+
+    config.vm.define :d3 do |db3|
+        db3.vm.host_name = "db3"
+        db3.vm.network "private_network", ip: "10.1.1.163"
+        db3.vm.provision :shell,
+            inline: "./bootstrap_db.sh \"10.1.1.163\" \"10.1.1.161,10.1.1.162,10.1.1.163\"" 
+   end
+
+end
+
+
