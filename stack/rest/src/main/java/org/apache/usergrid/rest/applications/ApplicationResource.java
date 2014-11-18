@@ -638,13 +638,10 @@ public class ApplicationResource extends ServiceResource {
     	 */
     	@POST
     	@Path("*/push")
+    	@Consumes(MediaType.APPLICATION_JSON)
     	public JSONWithPadding sendNotificationByApp(@FormParam("message") String message)
     			throws Exception {
 
-    		
-    		System.out.println("**** PUSH MESSAGE: " + message);
-    		
-    		
     		ApiResponse response = createApiResponse();
     		response.setAction("Sending push for All");
     
