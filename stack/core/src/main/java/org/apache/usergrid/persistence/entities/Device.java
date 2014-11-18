@@ -14,12 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.usergrid.persistence.entities;
 
 
 import java.util.List;
 import java.util.UUID;
 
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import org.codehaus.jackson.map.annotate.JsonSerialize;
@@ -49,6 +51,11 @@ public class Device extends TypedEntity {
     @EntityProperty
     protected Integer badge;
 
+    @EntityProperty
+    protected String platform;
+    
+    @EntityProperty
+    protected String token;
 
     public Device() {
         // id = UUIDUtils.newTimeUUID();
@@ -62,6 +69,7 @@ public class Device extends TypedEntity {
 
     @Override
     @JsonSerialize(include = Inclusion.NON_NULL)
+    @XmlElement(name="name")
     public String getName() {
         return name;
     }
@@ -84,6 +92,7 @@ public class Device extends TypedEntity {
 
 
     @JsonSerialize(include = Inclusion.NON_NULL)
+    @XmlElement(name="receipts")
     public List<UUID> getReceipts() {
         return receipts;
     }
@@ -95,6 +104,7 @@ public class Device extends TypedEntity {
 
 
     @JsonSerialize(include = Inclusion.NON_NULL)
+    @XmlElement(name="badge")
     public Integer getBadge() {
         return badge;
     }
@@ -102,5 +112,27 @@ public class Device extends TypedEntity {
 
     public void setBadge( Integer badge ) {
         this.badge = badge;
+    }
+    
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    @XmlElement(name="platform")
+    public String getPlatform() {
+        return platform;
+    }
+
+
+    public void setPlatform( String platform ) {
+        this.platform = platform;
+    }
+    
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    @XmlElement(name="token")
+    public String getToken() {
+        return token;
+    }
+
+
+    public void setToken( String token ) {
+        this.token = token;
     }
 }

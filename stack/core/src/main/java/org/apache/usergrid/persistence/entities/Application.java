@@ -120,6 +120,8 @@ public class Application extends TypedEntity {
     @EntityCollection(type = "notification")
     protected List<UUID> notifications;
 
+    @EntityCollection (type = "EntityNotifier")
+    protected List<UUID> notifiers;
 
     public Application() {
         // id = UUIDUtils.newTimeUUID();
@@ -130,6 +132,14 @@ public class Application extends TypedEntity {
         uuid = id;
     }
 
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    public List<UUID> getNotifiers() {
+        return notifiers;
+    }
+    
+    public void setNotifiers(List<UUID> notifiers) {
+		this.notifiers = notifiers;
+	}
 
     @Override
     @JsonSerialize(include = Inclusion.NON_NULL)

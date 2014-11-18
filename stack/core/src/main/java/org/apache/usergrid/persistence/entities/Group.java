@@ -69,14 +69,25 @@ public class Group extends TypedEntity {
     @EntityCollection(type = "role", linkedCollection = "groups", indexingDynamicDictionaries = true)
     protected List<UUID> roles;
 
+    @EntityCollection(type = "idm", linkedCollection = "groups")
+    protected List<UUID> idms;   
 
     public Group() {
         // id = UUIDUtils.newTimeUUID();
     }
 
-
     public Group( UUID id ) {
         uuid = id;
+    }
+    
+
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    public List<UUID> getIdms() {
+        return idms;
+    }
+
+    public void setIdms( List<UUID> idms ) {
+        this.idms = idms;
     }
 
 

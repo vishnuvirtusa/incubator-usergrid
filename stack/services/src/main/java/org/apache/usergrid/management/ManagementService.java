@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.apache.usergrid.persistence.CredentialsInfo;
 import org.apache.usergrid.persistence.Entity;
+import org.apache.usergrid.persistence.EntityNotifier;
 import org.apache.usergrid.persistence.EntityRef;
 import org.apache.usergrid.persistence.Identifier;
 import org.apache.usergrid.persistence.entities.Application;
@@ -32,6 +33,7 @@ import org.apache.usergrid.persistence.entities.Group;
 import org.apache.usergrid.persistence.entities.User;
 import org.apache.usergrid.security.oauth.AccessInfo;
 import org.apache.usergrid.security.shiro.PrincipalCredentialsToken;
+import org.apache.usergrid.services.ServicePayload;
 import org.apache.usergrid.services.ServiceResults;
 
 import com.google.common.collect.BiMap;
@@ -317,4 +319,15 @@ public interface ManagementService {
 
     /** For testing purposes only */
     public Properties getProperties();
+    
+    /**Get all notifiers from the application */
+	public Map<String, EntityNotifier> getAllNotifiers(UUID appId)throws Exception;
+    
+    /**Get specific notifier from the application */
+	public EntityNotifier getNotifier(UUID appId, String notifierName)
+			throws Exception;
+	
+	/**Update notifier details */
+	public EntityNotifier updateNotifier(UUID appId, String notifierName,ServicePayload servicePayload) throws Exception;
+
 }

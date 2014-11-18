@@ -33,6 +33,7 @@ import org.apache.usergrid.persistence.EntityManagerFactory;
 import org.apache.usergrid.rest.exceptions.RedirectionException;
 import org.apache.usergrid.security.tokens.TokenService;
 import org.apache.usergrid.services.ServiceManagerFactory;
+import org.apache.usergrid.services.push.PushService;
 
 import com.sun.jersey.api.core.HttpContext;
 import com.sun.jersey.api.core.ResourceContext;
@@ -89,6 +90,8 @@ public abstract class AbstractContextResource {
     @Autowired
     protected TokenService tokens;
 
+    @Autowired
+    protected PushService pushService;
 
     public AbstractContextResource() {
     }
