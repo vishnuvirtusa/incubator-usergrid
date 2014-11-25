@@ -60,6 +60,18 @@
 		<property name="saltProvider" ref="saltProvider"/>
 	</bean>
 	
+	<bean id="notifierService"
+		class="org.apache.usergrid.services.notifiers.NotifiersServiceProvider">
+		<property name="serviceManagerFactory" ref="serviceManagerFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="pushService" class="org.apache.usergrid.services.push.PushServiceImpl">
+		<property name="serviceManagerFactory" ref="serviceManagerFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="notifierService" ref="notifierService" />
+	</bean>
+	
 	<bean id="saltProvider" class="org.apache.usergrid.security.salt.NoOpSaltProvider" />
 
 	<bean id="serviceManagerFactory" class="org.apache.usergrid.services.ServiceManagerFactory">
