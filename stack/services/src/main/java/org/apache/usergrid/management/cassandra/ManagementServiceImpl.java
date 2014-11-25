@@ -31,11 +31,9 @@ import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.shiro.UnavailableSecurityManagerException;
-
 import org.apache.usergrid.locking.Lock;
 import org.apache.usergrid.locking.LockManager;
 import org.apache.usergrid.management.AccountCreationProps;
@@ -58,13 +56,16 @@ import org.apache.usergrid.persistence.CredentialsInfo;
 import org.apache.usergrid.persistence.Entity;
 import org.apache.usergrid.persistence.EntityManager;
 import org.apache.usergrid.persistence.EntityManagerFactory;
+import org.apache.usergrid.persistence.EntityNotifier;
 import org.apache.usergrid.persistence.EntityRef;
 import org.apache.usergrid.persistence.Identifier;
 import org.apache.usergrid.persistence.PagingResultsIterator;
 import org.apache.usergrid.persistence.Results;
 import org.apache.usergrid.persistence.Results.Level;
 import org.apache.usergrid.persistence.SimpleEntityRef;
+import org.apache.usergrid.persistence.entities.AppleNotifier;
 import org.apache.usergrid.persistence.entities.Application;
+import org.apache.usergrid.persistence.entities.GoogleNotifier;
 import org.apache.usergrid.persistence.entities.Group;
 import org.apache.usergrid.persistence.entities.User;
 import org.apache.usergrid.persistence.exceptions.DuplicateUniquePropertyExistsException;
@@ -88,6 +89,7 @@ import org.apache.usergrid.security.tokens.exceptions.TokenException;
 import org.apache.usergrid.services.ServiceAction;
 import org.apache.usergrid.services.ServiceManager;
 import org.apache.usergrid.services.ServiceManagerFactory;
+import org.apache.usergrid.services.ServicePayload;
 import org.apache.usergrid.services.ServiceRequest;
 import org.apache.usergrid.services.ServiceResults;
 import org.apache.usergrid.utils.ConversionUtils;
@@ -100,7 +102,6 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 
 import static java.lang.Boolean.parseBoolean;
-
 import static org.apache.commons.codec.binary.Base64.encodeBase64URLSafeString;
 import static org.apache.commons.codec.digest.DigestUtils.sha;
 import static org.apache.commons.lang.StringUtils.isBlank;
@@ -2889,4 +2890,54 @@ public class ManagementServiceImpl implements ManagementService {
         // TODO Auto-generated method stub
         return null;
     }
+    
+    @Override
+	public Map<String, EntityNotifier> getAllNotifiers(UUID appId) {
+		Map<String, EntityNotifier> notifiers = new HashMap<String, EntityNotifier>();
+		try {
+			EntityManager entityManager = emf.getEntityManager(appId);
+			ServiceManager serviceManager = smf.getServiceManager(appId);
+			ServiceResults serviceResults = serviceManager.newRequest(
+					ServiceAction.GET, parameters("notifiers")).execute();
+			List<Entity> resultEntities = serviceResults.getEntities();
+
+			for (Entity entity : resultEntities) {
+				if (entity.getName().equals("apple")) {
+					notifiers.put(entity.getName(), entityManager.get(
+							entity.getUuid(), AppleNotifier.class));
+				} else if (entity.getName().equals("google")) {
+					notifiers.put(entity.getName(), entityManager.get(
+							entity.getUuid(), GoogleNotifier.class));
+				}
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return notifiers;
+	}
+
+	@Override
+	public EntityNotifier getNotifier(UUID appId, String notifierName)
+			throws Exception {
+		Map<String, EntityNotifier> notifiers = getAllNotifiers(appId);
+		if (notifiers.containsKey(notifierName)) {
+			return notifiers.get(notifierName);
+		} else {
+			return null;
+		}
+	}
+
+	@Override
+	public EntityNotifier updateNotifier(UUID appId, String notifierName,
+			ServicePayload servicePayload) throws Exception {
+		ServiceManager serviceManager = smf.getServiceManager(appId);
+
+		serviceManager.newRequest(ServiceAction.PUT,
+				parameters("notifiers", notifierName), servicePayload)
+				.execute();
+
+		return getNotifier(appId, notifierName);
+	}
 }

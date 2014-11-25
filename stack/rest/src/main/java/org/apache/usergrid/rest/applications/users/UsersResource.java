@@ -16,7 +16,6 @@
  */
 package org.apache.usergrid.rest.applications.users;
 
-
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -62,205 +61,222 @@ import static org.apache.commons.lang.StringUtils.isBlank;
 import static org.apache.commons.lang.StringUtils.isNotBlank;
 import static org.apache.usergrid.services.ServiceParameter.addParameter;
 
-
 @Component("org.apache.usergrid.rest.applications.users.UsersResource")
 @Scope("prototype")
 @Produces(MediaType.APPLICATION_JSON)
 public class UsersResource extends ServiceResource {
 
-    private static final Logger logger = LoggerFactory.getLogger( UsersResource.class );
+	private static final Logger logger = LoggerFactory
+			.getLogger(UsersResource.class);
 
-    String errorMsg;
-    User user;
+	String errorMsg;
+	User user;
 
+	public UsersResource() {
+	}
 
-    public UsersResource() {
-    }
+	@Override
+	@Path(RootResource.ENTITY_ID_PATH)
+	public AbstractContextResource addIdParameter(@Context UriInfo ui,
+			@PathParam("entityId") PathSegment entityId) throws Exception {
 
+		logger.info("ServiceResource.addIdParameter");
 
-    @Override
-    @Path(RootResource.ENTITY_ID_PATH)
-    public AbstractContextResource addIdParameter( @Context UriInfo ui, @PathParam("entityId") PathSegment entityId )
-            throws Exception {
+		UUID itemId = UUID.fromString(entityId.getPath());
 
-        logger.info( "ServiceResource.addIdParameter" );
+		addParameter(getServiceParameters(), itemId);
 
-        UUID itemId = UUID.fromString( entityId.getPath() );
+		addMatrixParams(getServiceParameters(), ui, entityId);
 
-        addParameter( getServiceParameters(), itemId );
+		return getSubResource(UserResource.class).init(
+				Identifier.fromUUID(itemId));
+	}
 
-        addMatrixParams( getServiceParameters(), ui, entityId );
+	@Override
+	@Path("{itemName}")
+	public AbstractContextResource addNameParameter(@Context UriInfo ui,
+			@PathParam("itemName") PathSegment itemName) throws Exception {
 
-        return getSubResource( UserResource.class ).init( Identifier.fromUUID( itemId ) );
-    }
+		logger.info("ServiceResource.addNameParameter");
 
+		logger.info("Current segment is " + itemName.getPath());
 
-    @Override
-    @Path("{itemName}")
-    public AbstractContextResource addNameParameter( @Context UriInfo ui, @PathParam("itemName") PathSegment itemName )
-            throws Exception {
+		if (itemName.getPath().startsWith("{")) {
+			Query query = Query.fromJsonString(itemName.getPath());
+			if (query != null) {
+				addParameter(getServiceParameters(), query);
+			}
+			addMatrixParams(getServiceParameters(), ui, itemName);
 
-        logger.info( "ServiceResource.addNameParameter" );
+			return getSubResource(ServiceResource.class);
+		}
 
-        logger.info( "Current segment is " + itemName.getPath() );
+		addParameter(getServiceParameters(), itemName.getPath());
 
-        if ( itemName.getPath().startsWith( "{" ) ) {
-            Query query = Query.fromJsonString( itemName.getPath() );
-            if ( query != null ) {
-                addParameter( getServiceParameters(), query );
-            }
-            addMatrixParams( getServiceParameters(), ui, itemName );
+		addMatrixParams(getServiceParameters(), ui, itemName);
+		Identifier id = Identifier.from(itemName.getPath());
+		if (id == null) {
+			throw new IllegalArgumentException("Not a valid user identifier: "
+					+ itemName.getPath());
+		}
+		return getSubResource(UserResource.class).init(id);
+	}
 
-            return getSubResource( ServiceResource.class );
-        }
+	@GET
+	@Path("resetpw")
+	@Produces(MediaType.TEXT_HTML)
+	public Viewable showPasswordResetForm(@Context UriInfo ui) {
+		return handleViewable("resetpw_email_form", this);
+	}
 
-        addParameter( getServiceParameters(), itemName.getPath() );
+	@POST
+	@Path("resetpw")
+	@Consumes("application/x-www-form-urlencoded")
+	@Produces(MediaType.TEXT_HTML)
+	public Viewable handlePasswordResetForm(@Context UriInfo ui,
+			@FormParam("email") String email,
+			@FormParam("recaptcha_challenge_field") String challenge,
+			@FormParam("recaptcha_response_field") String uresponse) {
 
-        addMatrixParams( getServiceParameters(), ui, itemName );
-        Identifier id = Identifier.from( itemName.getPath() );
-        if ( id == null ) {
-            throw new IllegalArgumentException( "Not a valid user identifier: " + itemName.getPath() );
-        }
-        return getSubResource( UserResource.class ).init( id );
-    }
+		try {
+			ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
+			reCaptcha.setPrivateKey(properties.getRecaptchaPrivate());
 
+			ReCaptchaResponse reCaptchaResponse = reCaptcha.checkAnswer(
+					httpServletRequest.getRemoteAddr(), challenge, uresponse);
 
-    @GET
-    @Path("resetpw")
-    @Produces(MediaType.TEXT_HTML)
-    public Viewable showPasswordResetForm( @Context UriInfo ui ) {
-        return handleViewable( "resetpw_email_form", this );
-    }
+			if (isBlank(email)) {
+				errorMsg = "No email provided, try again...";
+				return handleViewable("resetpw_email_form", this);
+			}
 
+			if (!useReCaptcha() || reCaptchaResponse.isValid()) {
+				user = management.getAppUserByIdentifier(getApplicationId(),
+						Identifier.fromEmail(email));
+				if (user != null) {
+					management.startAppUserPasswordResetFlow(
+							getApplicationId(), user);
+					return handleViewable("resetpw_email_success", this);
+				} else {
+					errorMsg = "We don't recognize that email, try again...";
+					return handleViewable("resetpw_email_form", this);
+				}
+			} else {
+				errorMsg = "Incorrect Captcha, try again...";
+				return handleViewable("resetpw_email_form", this);
+			}
+		} catch (RedirectionException e) {
+			throw e;
+		} catch (Exception e) {
+			return handleViewable("resetpw_email_form", e);
+		}
+	}
 
-    @POST
-    @Path("resetpw")
-    @Consumes("application/x-www-form-urlencoded")
-    @Produces(MediaType.TEXT_HTML)
-    public Viewable handlePasswordResetForm( @Context UriInfo ui, @FormParam("email") String email,
-                                             @FormParam("recaptcha_challenge_field") String challenge,
-                                             @FormParam("recaptcha_response_field") String uresponse ) {
+	public String getErrorMsg() {
+		return errorMsg;
+	}
 
-        try {
-            ReCaptchaImpl reCaptcha = new ReCaptchaImpl();
-            reCaptcha.setPrivateKey( properties.getRecaptchaPrivate() );
+	public User getUser() {
+		return user;
+	}
 
-            ReCaptchaResponse reCaptchaResponse =
-                    reCaptcha.checkAnswer( httpServletRequest.getRemoteAddr(), challenge, uresponse );
+	@PUT
+	@Override
+	@RequireApplicationAccess
+	public JSONWithPadding executePut(@Context UriInfo ui,
+			Map<String, Object> json,
+			@QueryParam("callback") @DefaultValue("callback") String callback)
+			throws Exception {
+		User user = getUser();
+		if (user == null) {
+			return executePost(ui, new EntityHolder(json), callback);
+		}
+		if (json != null) {
+			json.remove("password");
+			json.remove("pin");
+		}
+		return super.executePut(ui, json, callback);
+	}
 
-            if ( isBlank( email ) ) {
-                errorMsg = "No email provided, try again...";
-                return handleViewable( "resetpw_email_form", this );
-            }
+	@POST
+	@Override
+	@RequireApplicationAccess
+	public JSONWithPadding executePost(@Context UriInfo ui,
+			EntityHolder<Object> body,
+			@QueryParam("callback") @DefaultValue("callback") String callback)
+			throws Exception {
+		Object json = body.getEntity();
+		String password = null;
+		String pin = null;
 
-            if ( !useReCaptcha() || reCaptchaResponse.isValid() ) {
-                user = management.getAppUserByIdentifier( getApplicationId(), Identifier.fromEmail( email ) );
-                if ( user != null ) {
-                    management.startAppUserPasswordResetFlow( getApplicationId(), user );
-                    return handleViewable( "resetpw_email_success", this );
-                }
-                else {
-                    errorMsg = "We don't recognize that email, try again...";
-                    return handleViewable( "resetpw_email_form", this );
-                }
-            }
-            else {
-                errorMsg = "Incorrect Captcha, try again...";
-                return handleViewable( "resetpw_email_form", this );
-            }
-        }
-        catch ( RedirectionException e ) {
-            throw e;
-        }
-        catch ( Exception e ) {
-            return handleViewable( "resetpw_email_form", e );
-        }
-    }
+		Boolean registration_requires_email_confirmation = (Boolean) this
+				.getServices()
+				.getEntityManager()
+				.getProperty(this.getServices().getApplicationRef(),
+						"registration_requires_email_confirmation");
+		boolean activated = !((registration_requires_email_confirmation != null) && registration_requires_email_confirmation);
 
+		if (json instanceof Map) {
+			@SuppressWarnings("unchecked")
+			Map<String, Object> map = (Map<String, Object>) json;
+			password = (String) map.get("password");
+			map.remove("password");
+			pin = (String) map.get("pin");
+			map.remove("pin");
+			map.put("activated", activated);
+		} else if (json instanceof List) {
+			@SuppressWarnings("unchecked")
+			List<Object> list = (List<Object>) json;
+			for (Object obj : list) {
+				if (obj instanceof Map) {
+					@SuppressWarnings("unchecked")
+					Map<String, Object> map = (Map<String, Object>) obj;
+					map.remove("password");
+					map.remove("pin");
+				}
+			}
+		}
 
-    public String getErrorMsg() {
-        return errorMsg;
-    }
+		ApiResponse response = (ApiResponse) super.executePost(ui, body,
+				callback).getJsonSource();
 
+		if ((response.getEntities() != null)
+				&& (response.getEntities().size() == 1)) {
 
-    public User getUser() {
-        return user;
-    }
+			Entity entity = response.getEntities().get(0);
+			User user = (User) entity.toTypedEntity();
 
+			if (isNotBlank(password)) {
+				management.setAppUserPassword(getApplicationId(),
+						user.getUuid(), password);
+			}
 
-    @PUT
-    @Override
-    @RequireApplicationAccess
-    public JSONWithPadding executePut( @Context UriInfo ui, Map<String, Object> json,
-                                       @QueryParam("callback") @DefaultValue("callback") String callback )
-            throws Exception {
-        User user = getUser();
-        if ( user == null ) {
-            return executePost( ui, new EntityHolder( json ), callback );
-        }
-        if ( json != null ) {
-            json.remove( "password" );
-            json.remove( "pin" );
-        }
-        return super.executePut( ui, json, callback );
-    }
+			if (isNotBlank(pin)) {
+				management.setAppUserPin(getApplicationId(), user.getUuid(),
+						pin);
+			}
 
+			if (!activated) {
+				management.startAppUserActivationFlow(getApplicationId(), user);
+			}
+		}
+		return new JSONWithPadding(response, callback);
+	}
 
-    @POST
-    @Override
-    @RequireApplicationAccess
-    public JSONWithPadding executePost( @Context UriInfo ui, EntityHolder<Object> body,
-                                        @QueryParam("callback") @DefaultValue("callback") String callback )
-            throws Exception {
-        Object json = body.getEntity();
-        String password = null;
-        String pin = null;
+	@POST
+	@Path("push")
+	public JSONWithPadding sendPushToDevices(
+			@FormParam("message") String message) throws Exception {
+		ApiResponse response;
+		if (message != null) {
+			pushService.sendNotificationByUsers(message, getApplicationId(),
+					null);
+			response = createApiResponse();
+			response.setAction("Send Notifications By UsersNames");
+			response.setSuccess();
+			return new JSONWithPadding(response);
+		}
+		return null;
+	}
 
-        Boolean registration_requires_email_confirmation = ( Boolean ) this.getServices().getEntityManager()
-                                                                           .getProperty( this.getServices()
-                                                                                             .getApplicationRef(),
-                                                                                   "registration_requires_email_confirmation" );
-        boolean activated =
-                !( ( registration_requires_email_confirmation != null ) && registration_requires_email_confirmation );
-
-        if ( json instanceof Map ) {
-            @SuppressWarnings("unchecked") Map<String, Object> map = ( Map<String, Object> ) json;
-            password = ( String ) map.get( "password" );
-            map.remove( "password" );
-            pin = ( String ) map.get( "pin" );
-            map.remove( "pin" );
-            map.put( "activated", activated );
-        }
-        else if ( json instanceof List ) {
-            @SuppressWarnings("unchecked") List<Object> list = ( List<Object> ) json;
-            for ( Object obj : list ) {
-                if ( obj instanceof Map ) {
-                    @SuppressWarnings("unchecked") Map<String, Object> map = ( Map<String, Object> ) obj;
-                    map.remove( "password" );
-                    map.remove( "pin" );
-                }
-            }
-        }
-
-        ApiResponse response = ( ApiResponse ) super.executePost( ui, body, callback ).getJsonSource();
-
-        if ( ( response.getEntities() != null ) && ( response.getEntities().size() == 1 ) ) {
-
-            Entity entity = response.getEntities().get( 0 );
-            User user = ( User ) entity.toTypedEntity();
-
-            if ( isNotBlank( password ) ) {
-                management.setAppUserPassword( getApplicationId(), user.getUuid(), password );
-            }
-
-            if ( isNotBlank( pin ) ) {
-                management.setAppUserPin( getApplicationId(), user.getUuid(), pin );
-            }
-
-            if ( !activated ) {
-                management.startAppUserActivationFlow( getApplicationId(), user );
-            }
-        }
-        return new JSONWithPadding( response, callback );
-    }
 }
