@@ -88,5 +88,17 @@
   </bean>
 
   <bean id="exportJob" class="org.apache.usergrid.management.export.ExportJob" />
+  
+  <bean id="notifierService"
+		class="org.apache.usergrid.services.notifiers.NotifiersServiceProvider">
+		<property name="serviceManagerFactory" ref="serviceManagerFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+	</bean>
+
+	<bean id="pushService" class="org.apache.usergrid.services.push.PushServiceImpl">
+		<property name="serviceManagerFactory" ref="serviceManagerFactory" />
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="notifierService" ref="notifierService" />
+	</bean>
 
 </beans>
