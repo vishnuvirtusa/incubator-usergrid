@@ -43,6 +43,7 @@ public class MessageSender {
 	public static MessageSender getMessageSenderInstance(EntityNotifier appNotifier,EntityNotifier googleNotifier){
 		if(messageSender==null){
 			synchronized (MessageSender.class) {
+				System.out.println("INTIT Notifierssss"+appNotifier+" - "+googleNotifier);
 				messageSender = new MessageSender();
 				messageSender.appleNotifier = appNotifier;
 				messageSender.googleNotifier = googleNotifier;
